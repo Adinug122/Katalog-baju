@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useForm } from '@inertiajs/react';
 import Layout from '@/Layouts/AuthenticatedLayout';
-import { BarChart, Bar,reportData, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
-export default function ReportsDashboard({ summary, time_range, start_date, end_date, filters }) {
+export default function ReportsDashboard({ reportData, summary, time_range, start_date, end_date, filters }) {
     const { data, setData, get, processing } = useForm({
         range: time_range || '30',
     });

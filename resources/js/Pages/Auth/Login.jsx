@@ -79,6 +79,15 @@ export default function Login({ status, canResetPassword }) {
                         </span>
                     </label>
                 </div>
+            <div className="pt-5">
+                    <PrimaryButton 
+                        className="w-full justify-center py-3 text-base font-semibold shadow-md active:scale-[0.98] transition-transform" 
+                        disabled={processing}
+                    >
+                        Masuk Sekarang
+                    </PrimaryButton>
+                </div>
+
 
                 <div className="mt-4 flex items-center justify-end">
                     {canResetPassword && (
@@ -90,9 +99,7 @@ export default function Login({ status, canResetPassword }) {
                         </Link>
                     )}
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
+                  
                 </div>
             </form>
         </GuestLayout>

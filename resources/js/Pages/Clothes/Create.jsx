@@ -16,6 +16,7 @@ export default function ClothesCreate({ categories }) {
     description: '',
     is_active: 1,
     stock: 1,
+    condition: 'Bagus',
     images: [],
   });
 
@@ -190,13 +191,24 @@ export default function ClothesCreate({ categories }) {
           </div>
         </div>
 
-        <textarea value={data.description} onChange={(e) => setData('description', e.target.value)} placeholder="Deskripsi" className="w-full rounded border px-2 py-1" rows={4} required />
-
         <div className="grid gap-2 sm:grid-cols-2">
+          <div>
+            <label className="block text-xs font-medium text-slate-600">Kondisi</label>
+            <select value={data.condition} onChange={(e) => setData('condition', e.target.value)} className="mt-1 w-full rounded border px-2 py-1">
+              <option value="Bagus">Bagus</option>
+              <option value="Cukup">Cukup</option>
+              <option value="Perlu Perbaikan">Perlu Perbaikan</option>
+            </select>
+          </div>
           <div>
             <label className="block text-xs font-medium text-slate-600">Stok</label>
             <input type="number" value={data.stock} onChange={(e) => setData('stock', e.target.value)} className="mt-1 w-full rounded border px-2 py-1" required />
           </div>
+        </div>
+
+        <textarea value={data.description} onChange={(e) => setData('description', e.target.value)} placeholder="Deskripsi" className="w-full rounded border px-2 py-1" rows={4} required />
+
+        <div className="grid gap-2 sm:grid-cols-2">
           <div className="flex flex-col">
             <label className="block text-xs font-medium text-slate-600">Status</label>
             <label className="mt-1 flex items-center gap-2">

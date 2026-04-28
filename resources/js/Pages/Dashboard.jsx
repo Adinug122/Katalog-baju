@@ -1,7 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
+import Kalender from './Kalender';
 import { 
-    Package, CheckCircle, ShoppingCart, Wallet, TrendingUp, BarChart3, Trophy 
+    Package, CheckCircle, Clock, Wallet, TrendingUp, BarChart3, Trophy, Calendar
 } from 'lucide-react';
 import {
     Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, 
@@ -14,17 +15,16 @@ ChartJS.register(
     BarElement, Title, Tooltip, Filler, Legend
 );
 
-export default function Dashboard({ metrics, monthly_sales = [], top_rented = [], auth_role }) {
+
+export default function Dashboard({ metrics, monthly_sales = [], monthly_volume = [], top_rented = [], bookings = [], auth_role, clothes = [] }) {
     const goldColor = '#C9A834';
     
-    // Konfigurasi Font Global untuk Chart.js (Inter)
     const chartFontConfig = {
         family: "'Inter', sans-serif",
         size: 11,
         weight: '500'
     };
 
-    // Pastikan revenue adalah angka murni untuk grafik
     const chartDataItems = monthly_sales.map(m => ({
         label: m.label,
         revenue: Number(m.revenue) || 0
@@ -60,11 +60,11 @@ export default function Dashboard({ metrics, monthly_sales = [], top_rented = []
 
     // 2. Konfigurasi Bar Chart
     const barChartData = {
-        labels: chartDataItems.map((m) => m.label),
+        labels: monthly_volume.map((m) => m.label),
         datasets: [
             {
-                label: 'Revenue',
-                data: chartDataItems.map((m) => m.revenue),
+                label: 'Volume',
+                data: monthly_volume.map((m) => m.volume),
                 backgroundColor: '#1E293B',
                 borderRadius: 6,
                 hoverBackgroundColor: goldColor,
@@ -108,6 +108,7 @@ export default function Dashboard({ metrics, monthly_sales = [], top_rented = []
         },
     };
 
+    
     return (
         <AuthenticatedLayout>
             <Head title="Dashboard" />
@@ -134,98 +135,126 @@ export default function Dashboard({ metrics, monthly_sales = [], top_rented = []
                             desc="Koleksi baju saat ini"
                         />
                         <StatCard 
-                            title="Produk Aktif" 
-                            value={metrics.active_clothes} 
+                            title="Order Aktif (Lunas)" 
+                            value={metrics.active_orders} 
                             icon={<CheckCircle className="text-[#C9A834]" />} 
-                            desc="Tersedia untuk disewa"
+                            desc="Order yang sudah lunas"
                         />
                         <StatCard 
-                            title="Sewa Tahun Ini" 
-                            value={metrics.this_year_rents} 
-                            icon={<ShoppingCart className="text-[#C9A834]" />} 
-                            desc="Total transaksi berhasil"
+                            title="Terlambat" 
+                            value={`${metrics.late_orders} (Rp ${Number(metrics.total_late_fine).toLocaleString('id-ID')})`} 
+                            icon={<Clock className="text-[#C9A834]" />} 
+                            desc="Order terlambat dengan denda"
+                        />
+                        <StatCard 
+                            title="Booking / DP" 
+                            value={metrics.booking_dp} 
+                            icon={<Wallet className="text-[#C9A834]" />} 
+                            desc="Order dengan DP pending"
                         />
                         {auth_role === 'owner' && (
                             <StatCard 
-                                title="Revenue" 
-                                value={`Rp ${Number(metrics.current_year_revenue).toLocaleString('id-ID')}`} 
-                                icon={<Wallet className="text-[#C9A834]" />} 
-                                desc="Pendapatan kotor tahun ini"
+                                title="Total Pendapatan Bulanan" 
+                                value={`Rp ${Number(metrics.monthly_revenue).toLocaleString('id-ID')}`} 
+                                icon={<TrendingUp className="text-[#C9A834]" />} 
+                                desc="Pendapatan bulan ini"
+                                highlight
+                            />
+                        )}
+                        {auth_role === 'owner' && (
+                            <StatCard 
+                                title="Total Pendapatan Tahunan" 
+                                value={`Rp ${Number(metrics.yearly_revenue).toLocaleString('id-ID')}`} 
+                                icon={<BarChart3 className="text-[#C9A834]" />} 
+                                desc="Pendapatan tahun ini"
                                 highlight
                             />
                         )}
                     </div>
 
-                    {/* Charts Section */}
-                    <div className="grid gap-6 lg:grid-cols-3">
-                        <div className="lg:col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-                            <div className="flex items-center gap-2 mb-6">
-                                <TrendingUp className="w-5 h-5 text-[#C9A834]" />
-                                <h3 className="text-lg font-bold text-slate-800">Analisis Pendapatan</h3>
+                    {/* Charts Section - Only for Owner */}
+                    {auth_role === 'owner' && (
+                        <div className="grid gap-6 lg:grid-cols-3">
+                            <div className="lg:col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+                                <div className="flex items-center gap-2 mb-6">
+                                    <TrendingUp className="w-5 h-5 text-[#C9A834]" />
+                                    <h3 className="text-lg font-bold text-slate-800">Analisis Pendapatan</h3>
+                                </div>
+                                <div className="h-[350px]">
+                                    {chartDataItems.length > 0 ? (
+                                        <Line data={lineChartData} options={commonOptions} />
+                                    ) : (
+                                        <EmptyState />
+                                    )}
+                                </div>
                             </div>
-                            <div className="h-[350px]">
-                                {chartDataItems.length > 0 ? (
-                                    <Line data={lineChartData} options={commonOptions} />
-                                ) : (
-                                    <EmptyState />
-                                )}
-                            </div>
-                        </div>
 
-                        <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col">
-                            <div className="flex items-center gap-2 mb-6">
-                                <BarChart3 className="w-5 h-5 text-[#C9A834]" />
-                                <h3 className="text-lg font-bold text-slate-800">Volume Bulanan</h3>
-                            </div>
-                            <div className="flex-1 min-h-[300px]">
-                                {chartDataItems.length > 0 ? (
-                                    <Bar data={barChartData} options={commonOptions} />
-                                ) : (
-                                    <EmptyState />
-                                )}
+                            <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col">
+                                <div className="flex items-center gap-2 mb-6">
+                                    <BarChart3 className="w-5 h-5 text-[#C9A834]" />
+                                    <h3 className="text-lg font-bold text-slate-800">Volume Bulanan</h3>
+                                </div>
+                                <div className="flex-1 min-h-[300px]">
+                                    {monthly_volume.length > 0 ? (
+                                        <Bar data={barChartData} options={{...commonOptions, plugins: {...commonOptions.plugins, tooltip: {...commonOptions.plugins.tooltip, callbacks: {label: (context) => `${context.parsed.y} Order`}}}}} />
+                                    ) : (
+                                        <EmptyState />
+                                    )}
+                                </div>
                             </div>
                         </div>
+                    )}
+
+                    <div className="bg-white rounded-3xl shadow-sm border border-slate-100">
+                        <Kalender clothes={clothes} />
                     </div>
 
-                    {/* Top Products Table */}
-                    <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-                        <div className="p-6 border-b border-slate-50 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <Trophy className="w-5 h-5 text-[#C9A834]" />
-                                <h3 className="text-lg font-bold text-slate-800">Top 5 Baju Terpopuler</h3>
+                    {auth_role === 'admin' && top_rented.length > 0 && (
+                        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                            <div className="p-6 border-b border-slate-50 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <Trophy className="w-5 h-5 text-[#C9A834]" />
+                                    <h3 className="text-lg font-bold text-slate-800">Top 5 Baju Terpopuler</h3>
+                                </div>
                             </div>
-                        </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-widest">
-                                    <tr>
-                                        <th className="px-6 py-4 font-bold">Nama Produk</th>
-                                        <th className="px-6 py-4 font-bold text-center">Frekuensi Sewa</th>
-                                        <th className="px-6 py-4 font-bold text-right">Label Kode</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-50">
-                                    {top_rented.map((item, idx) => (
-                                        <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
-                                            <td className="px-6 py-4">
-                                                <div className="font-bold text-slate-800">{item.name}</div>
-                                            </td>
-                                            <td className="px-6 py-4 text-center">
-                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-[#C9A834] border border-[#C9A834]/20">
-                                                    {item.rented_count}x Sewa
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-right">
-                                                <span className="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">
-                                                    {item.kode}
-                                                </span>
-                                            </td>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left">
+                                    <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-widest">
+                                        <tr>
+                                            <th className="px-6 py-4 font-bold">Nama Produk</th>
+                                            <th className="px-6 py-4 font-bold">Kode Produk</th>
+                                            <th className="px-6 py-4 font-bold text-center">Frekuensi Sewa</th>
+                                            <th className="px-6 py-4 font-bold text-center">Kategori</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-50">
+                                        {top_rented.map((item, idx) => (
+                                            <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
+                                                <td className="px-6 py-4">
+                                                    <div className="font-bold text-slate-800">{item.name}</div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">
+                                                        {item.kode}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-center">
+                                                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-[#C9A834] border border-[#C9A834]/20">
+                                                        {item.rent_frequency}x Sewa
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 text-center">
+                                                    <a href="/categories" className="text-[#C9A834] hover:underline">
+                                                        {item.category}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </AuthenticatedLayout>

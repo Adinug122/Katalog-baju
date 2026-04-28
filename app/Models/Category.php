@@ -8,7 +8,8 @@ class Category extends Model
 {
 
   protected $fillable = [
-        'name'
+        'name',
+         'fine_per_day'
     ];
 
     public function clothes()

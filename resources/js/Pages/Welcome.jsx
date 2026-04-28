@@ -47,7 +47,6 @@ const faqs = [
         <Navbar/>
 <div className="relative bg-[#FAF7F2]  overflow-hidden min-h-screen">
 
-
   <div className="absolute top-[-100px] right-[-100px] w-[500px] h-[500px] rounded-full bg-[#C9A834]/15 blur-3xl pointer-events-none" />
   <div className="absolute bottom-[-80px] left-[-80px] w-[350px] h-[350px] rounded-full bg-[#C9A834]/10 blur-2xl pointer-events-none" />
 
@@ -87,7 +86,6 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
 </div>
           }
         </div>
-
 
         <h1 className="text-4xl md:text-6xl font-bold font-heading tracking-wider text-gray-900 ">
           Temukan <br />

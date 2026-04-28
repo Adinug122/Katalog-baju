@@ -9,14 +9,17 @@ class Rent extends Model
        protected $fillable = [
         'customer_name',
         'customer_phone',
+        'customer_ktp',
         'rent_date',
         'return_date',
         'actual_return_date',
         'rent_price',
         'total_price',
         'denda',
+        'down_payment',
         'status',
         'invoice_code',
+        'note',
     ];
 
     protected static function booted()
@@ -48,4 +51,5 @@ class Rent extends Model
         return $this->hasMany(RentItem::class, 'rent_id', 'id');
     }
 
+  
 }

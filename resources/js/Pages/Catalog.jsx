@@ -4,6 +4,8 @@ import { Head,Link, usePage } from '@inertiajs/react'
 import React from 'react'
 export default function Catalog() {
 const { clothes, categories, filters } = usePage().props;
+
+
   return (
     <>
     <Head title='Catalog'/>
@@ -76,10 +78,11 @@ const { clothes, categories, filters } = usePage().props;
             <h3 className="text-xs font-bold text-gray-800 line-clamp-2 mb-1 uppercase">
                 {item.name}
             </h3>
-            
+{/*             
             <p className="text-sm font-bold text-primary mt-auto">
                 Rp {item.price.toLocaleString()}
-            </p>
+            </p> */}
+
             <Link 
                 href={route('catalog.show', item.kode)}
                 className="mt-3 block w-full bg-gray-100 text-center py-2 rounded-md text-[10px] font-bold hover:bg-gray-200 transition-colors"

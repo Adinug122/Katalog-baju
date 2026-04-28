@@ -37,6 +37,7 @@ class CategoryController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
+            'fine_per_day' => 'required|integer|min:0'
         ]);
 
         Category::create($validated);
@@ -52,6 +53,7 @@ class CategoryController extends Controller
      
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+            'fine_per_day' => 'required|integer|min:0'
         ]);
 
         $category->update($validated);

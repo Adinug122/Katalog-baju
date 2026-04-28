@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Settings, Shirt, List, ShoppingBag,Users } from "lucide-react" // Import icon
+import { Calendar, Home, Inbox, Settings, Shirt, List, ShoppingBag,Users, MonitorCheck, Search } from "lucide-react" // Import icon
 import { Link, usePage } from "@inertiajs/react";
 import {
   Sidebar,
@@ -22,6 +22,8 @@ export function AppSidebar() {
   { title: "Kategori", url: "/categories", icon: List },
   { title: "Produk", url: "/clothes", icon: Shirt },
   { title: "Sewa", url: "/rents", icon: ShoppingBag },
+  { title: "Cashflow", url: "/cashflow", icon: MonitorCheck },
+  { title: "Tracker Produk", url: "/tracker", icon: Search },
   { title: "Settings", url: "/profile", icon: Settings },
 ]
   if(userRole === 'owner'){

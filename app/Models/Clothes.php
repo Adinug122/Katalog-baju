@@ -19,8 +19,13 @@ class Clothes extends Model
         'is_active',
         'description',
         'stock',
+        'condition',
     ];
 
+    public function rentItems()
+    {
+        return $this->hasMany(RentItem::class, 'clothes_kode', 'kode');
+    }
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -40,4 +45,5 @@ class Clothes extends Model
     {
         return $query->where('is_active', true);
     }
+
 }

@@ -14,6 +14,7 @@ export default function ClothesEdit({ clothes, categories }) {
     description: clothes.description,
     is_active: clothes.is_active ? 1 : 0,
     stock: clothes.stock,
+    condition: clothes.condition || 'Bagus',
   });
 
   const {
@@ -223,14 +224,15 @@ export default function ClothesEdit({ clothes, categories }) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-600">Status</label>
+            <label className="block text-xs font-medium text-slate-600">Kondisi</label>
             <select
-              value={data.status}
-              onChange={(e) => setData('status', e.target.value)}
+              value={data.condition}
+              onChange={(e) => setData('condition', e.target.value)}
               className="mt-1 w-full rounded border px-2 py-1"
             >
-              <option value="free">Free</option>
-              <option value="booked">Booked</option>
+              <option value="Bagus">Bagus</option>
+              <option value="Cukup">Cukup</option>
+              <option value="Perlu Perbaikan">Perlu Perbaikan</option>
             </select>
           </div>
 

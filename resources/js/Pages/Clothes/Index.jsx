@@ -1,10 +1,9 @@
-import { Link, router, useForm } from '@inertiajs/react'; // Tambahkan useForm
+import { Link, router, useForm } from '@inertiajs/react';
 import Layout from '@/Layouts/AuthenticatedLayout';
 import { useState } from 'react';
 import Pagination from '@/Components/Pagination';
 
 export default function ClothesIndex({ clothes }) {
- 
   const { data, setData, post, reset, processing, errors } = useForm({
     name: '',
     size: '',
@@ -16,25 +15,24 @@ export default function ClothesIndex({ clothes }) {
 
   const [keyword, setKeyword] = useState('');
 
-  const HasilBaju = (clothes,key) =>{
-    if(!key) return clothes;
+  const HasilBaju = (clothes, key) => {
+    if (!key) return clothes;
     return clothes.filter((item) => {
-      return( 
-      item.kode?.toLowerCase().includes(key.toLowerCase()) ||
-      item.name?.toLowerCase().includes(key.toLowerCase())
-    )})
-  }
+      return (
+        item.kode?.toLowerCase().includes(key.toLowerCase()) ||
+        item.name?.toLowerCase().includes(key.toLowerCase()) ||
+        item.category?.name?.toLowerCase().includes(key.toLowerCase())
+      );
+    });
+  };
 
-  const hasilPencarian = HasilBaju(clothes.data,keyword);
+  const hasilPencarian = HasilBaju(clothes.data, keyword);
 
   // 2. Fungsi Delete
   const deleteClothes = (kode) => {
     if (!confirm('Hapus produk ini?')) return;
     router.delete(route('clothes.destroy', kode));
   };
-
-
- 
 
   function submit(e) {
     e.preventDefault();
@@ -44,37 +42,39 @@ export default function ClothesIndex({ clothes }) {
   }
 
   return (
-    <div className="space-y-6"> 
-<div className="flex flex-col md:flex-row items-start md:items-center  justify-between text-sm">
-        <div className='mb-4'>
+    <div className="space-y-6">
+      <div className="flex flex-col md:flex-row items-start md:items-center  justify-between text-sm">
+        <div className="mb-4">
           <h1 className="text-2xl font-bold text-slate-900">Katalog Baju</h1>
           <p className="mt-1 text-sm text-slate-500">Kelola inventory produk kamu di sini.</p>
         </div>
-      <div className="flex gap-4">
-    
+        <div className="flex gap-4">
           <input
             type="text"
-            className="rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-primary` focus:ring-primary`"
-            placeholder="Cari nama atau kode..."
+            className="rounded-lg border border-slate-300 px-4 py-2 text-sm focus:border-primary focus:ring-primary"
+            placeholder="Cari Produk.."
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
           />
-         <Link
-  href={route('clothes.create')}
-  className="inline-flex items-center rounded-lg bg-primary px-3 py-2 text-xs font-medium text-white transition hover:bg-primary sm:text-sm md:px-4 md:py-2.5"
->
-  <span className="mr-1 text-lg leading-none">+</span> 
-  Buat Produk Baru
-</Link>
+          <Link
+            href={route('clothes.create')}
+            className="inline-flex items-center rounded-lg bg-primary px-3 py-2 text-xs font-medium text-white transition hover:bg-primary/90 sm:text-sm md:px-4 md:py-2.5"
+          >
+            <span className="mr-1 text-lg leading-none">+</span>
+            Buat Produk Baru
+          </Link>
         </div>
       </div>
       <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
-        <table className="min-w-[600px] w-full divide-y divide-slate-200">
+        <table className="min-w-[800px] w-full divide-y divide-slate-200">
           <thead className="bg-slate-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500 tracking-wider">Foto</th>
               <th className="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500 tracking-wider">Kode</th>
               <th className="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500 tracking-wider">Nama</th>
+              {/* Tambahan Header Kategori & Deskripsi */}
+              <th className="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500 tracking-wider">Kategori</th>
+              <th className="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500 tracking-wider">Deskripsi</th>
               <th className="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500 tracking-wider">Ukuran</th>
               <th className="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500 tracking-wider">Harga</th>
               <th className="px-6 py-3 text-left text-xs font-semibold uppercase text-slate-500 tracking-wider">Stok</th>
@@ -94,20 +94,33 @@ export default function ClothesIndex({ clothes }) {
                     />
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-slate-900">{item.kode}</td>
-                  <td className="px-6 py-4 text-sm text-slate-600">{item.name}</td>
+                  <td className="px-6 py-4 text-sm font-semibold text-slate-800">{item.name}</td>
+                  
+                  {/* Tambahan Data Kategori */}
                   <td className="px-6 py-4 text-sm text-slate-600">
-                    <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-                        {item.size}
+                    <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-800">
+                      {item.category?.name || '-'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-slate-600">Rp {Number(item.price).toLocaleString('id-ID')}</td>
+
+                  {/* Tambahan Data Deskripsi dengan Truncate */}
+                  <td className="px-6 py-4 text-sm text-slate-500 max-w-[150px] truncate" title={item.description}>
+                    {item.description || '-'}
+                  </td>
+
+                  <td className="px-6 py-4 text-sm text-slate-600">
+                    <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                      {item.size || '-'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-sm font-medium text-slate-500">Rp {Number(item.price).toLocaleString('id-ID')}</td>
                   <td className="px-6 py-4 text-sm text-slate-600">{item.stock}</td>
                   <td className="px-6 py-4 text-sm">
                     <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${item.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`}>
                       {item.is_active ? 'Aktif' : 'Non-Aktif'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-center text-sm space-x-2">
+                  <td className="px-6 py-4 text-center text-sm space-x-2 whitespace-nowrap">
                     <Link
                       href={route('clothes.edit', item.kode)}
                       className="rounded-lg bg-amber-100 text-amber-700 px-3 py-1 text-xs font-semibold capitalize hover:bg-amber-200 transition"
@@ -126,14 +139,16 @@ export default function ClothesIndex({ clothes }) {
               ))
             ) : (
               <tr>
-                <td className="px-6 py-10 text-center text-sm text-slate-500" colSpan={7}>Belum ada data pakaian.</td>
+                {/* colSpan diubah jadi 10 karena sekarang ada 10 kolom */}
+                <td className="px-6 py-10 text-center text-sm text-slate-500" colSpan={10}>
+                  Belum ada data pakaian.
+                </td>
               </tr>
             )}
           </tbody>
         </table>
-      
       </div>
-      <Pagination links={clothes.links}/>
+      <Pagination links={clothes.links} />
     </div>
   );
 }

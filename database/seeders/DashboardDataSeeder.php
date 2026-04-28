@@ -29,6 +29,10 @@ class DashboardDataSeeder extends Seeder
             ['name' => 'Gamis', 'size' => 'L', 'price' => 150000, 'description' => 'Gamis syar9i nyaman', 'stock' => 7, 'is_active' => 1],
             ['name' => 'Blazer', 'size' => 'M', 'price' => 170000, 'description' => 'Blazer cocok untuk meeting', 'stock' => 4, 'is_active' => 0],
             ['name' => 'Polo Shirt', 'size' => 'L', 'price' => 80000, 'description' => 'Polo semi-formal', 'stock' => 6, 'is_active' => 0],
+            ['name' => 'Polo Shirt', 'size' => 'L', 'price' => 80000, 'description' => 'Polo semi-formal', 'stock' => 6, 'is_active' => 0],
+            ['name' => 'Polo Shirt', 'size' => 'L', 'price' => 80000, 'description' => 'Polo semi-formal', 'stock' => 6, 'is_active' => 0],
+            ['name' => 'Polo Shirt', 'size' => 'L', 'price' => 80000, 'description' => 'Polo semi-formal', 'stock' => 6, 'is_active' => 0],
+            ['name' => 'Polo Shirt', 'size' => 'L', 'price' => 80000, 'description' => 'Polo semi-formal', 'stock' => 6, 'is_active' => 0],
         ];
 
         $i = 1;
@@ -68,20 +72,6 @@ class DashboardDataSeeder extends Seeder
 
                 $status = (rand(1, 10) <= 8) ? 'completed' : (rand(1, 2) === 1 ? 'ongoing' : 'cancelled');
                 $denda = 0;
-
-                $rent = Rent::create([
-                    'clothes_kode' => $clothes->kode,
-                    'customer_name' => 'User ' . ucfirst(fake()->firstName()),
-                    'customer_phone' => '08' . rand(1000000000, 9999999999),
-                    'rent_date' => $rentDate->format('Y-m-d'),
-                    'return_date' => $returnDate->format('Y-m-d'),
-                    'actual_return_date' => $status === 'completed' ? $returnDate->format('Y-m-d') : null,
-                    'rent_price' => $clothes->price,
-                    'total_price' => $clothes->price * ($days + 1) + $denda,
-                    'denda' => $denda,
-                    'status' => $status,
-                ]);
-
                 // Kurangi stok untuk barang yang terpakai dan status not cancelled
                 if (in_array($status, ['booked', 'ongoing', 'completed']) && $clothes->stock > 0) {
                     $clothes->decrement('stock');

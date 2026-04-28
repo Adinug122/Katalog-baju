@@ -51,7 +51,7 @@ const summary = useMemo(() => {
             return;
         }
 
-        const adminPhone = "6282335436100";
+        const adminPhone = "6285708159800";
         let message = `*HALO ADMIN, SAYA INGIN MENYEWA BAJU*%0A%0A`;
         
         items.forEach((item, index) => {

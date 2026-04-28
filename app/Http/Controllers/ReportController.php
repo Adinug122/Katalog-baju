@@ -156,15 +156,15 @@ class ReportController extends Controller
             ->where('status', '!=', 'cancelled');
 
         if ($groupBy === 'month' || $groupBy === 'both') {
-            $byMonth = $query->selectRaw('YEAR(rent_date) as year, MONTH(rent_date) as month, SUM(total_price) as revenue, COUNT(id) as order_count')
-                ->groupBy('year', 'month')
-                ->orderBy('year', 'desc')->orderBy('month', 'desc')
-                ->get()
-                ->map(fn($row) => [
-                    'label' => Carbon::create($row->year, $row->month, 1)->format('F Y'),
-                    'revenue' => (float) $row->revenue,
-                    'order_count' => (int) $row->order_count,
-                ]);
+$byMonth = $query->selectRaw("EXTRACT(YEAR FROM rent_date) as year, EXTRACT(MONTH FROM rent_date) as month, SUM(total_price) as revenue, COUNT(id) as order_count")
+    ->groupBy('year', 'month')
+    ->orderBy('year', 'desc')->orderBy('month', 'desc')
+    ->get()
+    ->map(fn($row) => [
+        'label' => Carbon::create((int)$row->year, (int)$row->month, 1)->format('F Y'),
+        'revenue' => (float) $row->revenue,
+        'order_count' => (int) $row->order_count,
+    ]);
 
             return inertia('Reports/Revenue', [
                 'by_month' => $byMonth,

@@ -71,27 +71,26 @@ class DashboardController extends Controller
                 ->where('status', '!=', 'cancelled')
                 ->sum('total_price');
 
-            // Monthly Revenue Chart
-            $monthlySales = Rent::selectRaw('YEAR(rent_date) as year, MONTH(rent_date) as month, SUM(total_price) as revenue')
-                ->where('status', '!=', 'cancelled')
-                ->groupBy('year', 'month')
-                ->orderBy('year')->orderBy('month')
-                ->get()
-                ->map(fn($row) => [
-                    'label' => Carbon::create($row->year, $row->month, 1)->format('M Y'),
-                    'revenue' => (float) $row->revenue
-                ]);
+         $monthlySales = Rent::selectRaw("EXTRACT(YEAR FROM rent_date) as year, EXTRACT(MONTH FROM rent_date) as month, SUM(total_price) as revenue")
+    ->where('status', '!=', 'cancelled')
+    ->groupBy('year', 'month')
+    ->orderBy('year')->orderBy('month')
+    ->get()
+    ->map(fn($row) => [
+        'label' => \Carbon\Carbon::create((int)$row->year, (int)$row->month, 1)->format('M Y'),
+        'revenue' => (float) $row->revenue
+    ]);
 
-            // Monthly Volume (jumlah order)
-            $monthlyVolume = Rent::selectRaw('YEAR(rent_date) as year, MONTH(rent_date) as month, COUNT(id) as volume')
-                ->where('status', '!=', 'cancelled')
-                ->groupBy('year', 'month')
-                ->orderBy('year')->orderBy('month')
-                ->get()
-                ->map(fn($row) => [
-                    'label' => Carbon::create($row->year, $row->month, 1)->format('M Y'),
-                    'volume' => (int) $row->volume
-                ]);
+           // Ganti baris 81 jadi ini:
+$monthlyVolume = Rent::selectRaw("EXTRACT(YEAR FROM rent_date) as year, EXTRACT(MONTH FROM rent_date) as month, COUNT(id) as volume")
+    ->where('status', '!=', 'cancelled')
+    ->groupBy('year', 'month')
+    ->orderBy('year')->orderBy('month')
+    ->get()
+    ->map(fn($row) => [
+        'label' => \Carbon\Carbon::create((int)$row->year, (int)$row->month, 1)->format('M Y'),
+        'volume' => (int) $row->volume
+    ]);
         }
 
      
@@ -153,7 +152,7 @@ class DashboardController extends Controller
             'monthly_volume' => $monthlyVolume,
             'top_rented' => $topRented,
             'bookings' => $bookings,
-            'clothes' => $clothes, // <-- INI YANG BIKIN KALENDERNYA MUNCUL
+            'clothes' => $clothes, 
         ]);
     }
 }

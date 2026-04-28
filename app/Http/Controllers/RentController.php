@@ -269,10 +269,7 @@ class RentController extends Controller
         return back()->with('success', 'Pelunasan berhasil, status menjadi Ongoing.');
     }
 
-    // ─────────────────────────────────────────────
-    // Selesai / Return
-    // ─────────────────────────────────────────────
-
+  
     public function selesai(Request $request, $invoiceCode)
     {
         $rent  = Rent::with('details.cloth.category')->where('invoice_code', $invoiceCode)->firstOrFail();
@@ -377,10 +374,7 @@ class RentController extends Controller
         }
     }
 
-    // ─────────────────────────────────────────────
-    // Return Baju manual (dengan override denda)
-    // ─────────────────────────────────────────────
-
+   
     public function returnBaju(Request $request, Rent $rent)
     {
         if ($rent->status === 'completed') {
@@ -479,10 +473,7 @@ class RentController extends Controller
         }
     }
 
-    // ─────────────────────────────────────────────
-    // Export
-    // ─────────────────────────────────────────────
-
+   
     public function export(Request $request)
     {
         $status = $request->query('status');
@@ -510,10 +501,7 @@ class RentController extends Controller
         return Excel::download(new RentExport($rents), $fileName);
     }
 
-    // ─────────────────────────────────────────────
-    // Hitung Denda Keterlambatan
-    // ─────────────────────────────────────────────
-
+  
 private function calculateFine(Rent $rent): float
 {
     $rent->loadMissing('details.cloth.category');
@@ -537,10 +525,7 @@ private function calculateFine(Rent $rent): float
     return $totalFine;
 }
 
-    // ─────────────────────────────────────────────
-    // Invoice PDF
-    // ─────────────────────────────────────────────
-
+   
     public function invoice($invoiceCode)
     {
         $rent = Rent::with('details.cloth')->where('invoice_code', $invoiceCode)->firstOrFail();

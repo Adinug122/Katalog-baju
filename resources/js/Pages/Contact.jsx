@@ -49,8 +49,8 @@ export default function Contact() {
                   <div>
                     <h5 className='text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1'>Alamat Kantor</h5>
                     <p className='text-xs md:text-sm text-gray-700 leading-relaxed font-semibold'>
-                      Desa Sukamahi, RT.004 RW.002, Kota Deltamas, <br className="hidden md:block" />
-                      Kec. Cikarang Pusat, Kab. Bekasi, Jawa Barat 17530
+                   Perum TNI-AL Blok F3/31 RT 24 RW 08 Desa Kedungkendo, <br className="hidden md:block" />
+                       Kec. Candi Kab. Sidoarjo 61271
                     </p>
                   </div>
                 </div>
@@ -64,38 +64,31 @@ export default function Contact() {
                     <h5 className='text-[9px] md:text-[10px] font-bold text-green-600 uppercase tracking-widest mb-3'>Layanan Sales (WhatsApp)</h5>
                     <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                       <div>
-                        <p className='text-[12px] md:text-[13px] font-bold text-gray-800'>0878-8429-0400</p>
-                        <a href="https://wa.me/6287884290400" className='text-[10px] text-green-600 font-bold hover:underline flex items-center gap-1 mt-1'>
-                          Chat Sales 1 <ChevronRight size={12} />
+                        <p className='text-[12px] md:text-[13px] font-bold text-gray-800'>0812-2942-9816</p>
+                        <a href="https://wa.me/6281229429816" className='text-[10px] text-green-600 font-bold hover:underline flex items-center gap-1 mt-1'>
+                          Chat Admin <ChevronRight size={12} />
                         </a>
                       </div>
                       <div>
-                        <p className='text-[12px] md:text-[13px] font-bold text-gray-800'>0877-3772-2826</p>
-                        <a href="https://wa.me/6287737722826" className='text-[10px] text-green-600 font-bold hover:underline flex items-center gap-1 mt-1'>
-                          Chat Sales 2 <ChevronRight size={12} />
+                        <p className='text-[12px] md:text-[13px] font-bold text-gray-800'>0857-0815-9800</p>
+                        <a href="https://wa.me/6285708159800" className='text-[10px] text-green-600 font-bold hover:underline flex items-center gap-1 mt-1'>
+                          Chat Admin <ChevronRight size={12} />
                         </a>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className='grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2'>
-                  <div className='flex gap-4 items-center'>
-                    <div className='w-10 h-10 bg-blue-50 rounded-xl flex-shrink-0 flex items-center justify-center text-blue-600'>
-                      <Phone size={18} />
-                    </div>
-                    <div>
-                      <h5 className='text-[8px] md:text-[9px] font-bold text-gray-400 uppercase mb-0.5'>Telephone</h5>
-                      <p className='text-[11px] md:text-xs font-bold text-gray-800'>021-22157052</p>
-                    </div>
-                  </div>
+                
                   <div className='flex gap-4 items-center'>
                     <div className='w-10 h-10 bg-red-50 rounded-xl flex-shrink-0 flex items-center justify-center text-red-500'>
                       <Mail size={18} />
                     </div>
                     <div>
                       <h5 className='text-[8px] md:text-[9px] font-bold text-gray-400 uppercase mb-0.5'>Email Resmi</h5>
-                      <p className='text-[11px] md:text-xs font-bold text-gray-800'>sales@baju.co.id</p>
+                      <p className='text-[11px] md:text-xs font-bold text-gray-800'>piancollections@gmail.com</p>
                     </div>
+                
                   </div>
                 </div>
 
@@ -107,20 +100,23 @@ export default function Contact() {
                   <div>
                     <h5 className='text-[9px] md:text-[10px] font-bold uppercase tracking-widest opacity-80'>Jam Operasional</h5>
                     <p className='text-[10px] md:text-xs mt-0.5'>Senin - Sabtu</p>
-                    <p className='text-lg md:text-2xl font-black tracking-tight'>08:00 - 17:00</p>
+                    <p className='text-lg md:text-2xl font-black tracking-tight'>09:00 - 20:00</p>
                   </div>
                 </div>
 
               </div>
 
               <div className='rounded-xl overflow-hidden shadow-xl relative min-h-[350px] md:min-h-[500px]'>
-                 <iframe 
-                    title="Lokasi"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.544715970868!2d107.16875887586523!3d-6.323385761873155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e699be61614777d%3A0xc6106e21074a3f45!2sDesa%20Sukamahi%2C%20Kec.%20Cikarang%20Pusat%2C%20Kabupaten%20Bekasi%2C%20Jawa%20Barat!5e0!3m2!1sid!2sid!4v1711000000000!5m2!1sid!2sid" 
-                    className="w-full h-full border-0 grayscale-[0.2] hover:grayscale-0 transition-all duration-700"
-                    allowFullScreen="" 
-                    loading="lazy" 
-                  ></iframe>
+            <iframe
+  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15823.493659267611!2d112.68739505047114!3d-7.479227855270228!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7e0db63591bff%3A0x7ed4b80de0b7c8df!2sPerum%20TNI%20AL%2C%20Jl.%20Kayen%20No.21%2C%20Kayen%2C%20Kedungkendo%2C%20Kec.%20Candi%2C%20Kabupaten%20Sidoarjo%2C%20Jawa%20Timur%2061271!5e0!3m2!1sid!2sid!4v1777607765548!5m2!1sid!2sid"
+  width="100%"
+  height="100%"
+  style={{ border: 0 }}
+  allowFullScreen
+  loading="lazy"
+  referrerPolicy="no-referrer-when-downgrade"
+  className="w-full h-full"
+/>
                 
                   <div className="absolute top-4 right-4 md:top-6 md:right-6">
                      <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 md:px-4 md:py-2 rounded-full shadow-lg flex items-center gap-2 border border-white transition-all">

@@ -22,11 +22,13 @@ export default function About() {
             <div className='space-y-6'>
                 <div>
                     <h2 className='text-4xl font-extrabold text-gray-900 leading-tight mb-4'>
-                        Dedikasi Kami untuk <br />
+                       Kami fokus ke <br />
                         <span className="text-primary">Kualitas & Kenyamanan</span>
                     </h2>
                     <p className='text-gray-600 leading-relaxed'>
-                        Berawal dari semangat untuk menghadirkan tren fashion yang terjangkau namun tetap berkualitas tinggi, kami hadir sebagai solusi kebutuhan gaya hidup Anda. Kami percaya bahwa setiap pakaian bercerita tentang kepribadian pemakainya.
+                      Berawal dari semangat menghadirkan fashion lengkap (jas, kebaya, dress, dll) yang affordable tapi tetap berkualitas.
+Hadir buat nemenin style dan lifestyle Gen Z kamu.
+Karena setiap outfit bukan cuma baju, tapi juga cerita dan vibe diri kamu.
                     </p>
                 </div>
 
@@ -56,10 +58,10 @@ export default function About() {
                         alt="Tim Kami atau Workshop" 
                         className="w-full h-[400px] object-cover"
                     />
-                    <div className="absolute bottom-6 left-6 bg-white p-4 rounded-xl shadow-lg border-l-4 border-primary">
+                    {/* <div className="absolute bottom-6 left-6 bg-white p-4 rounded-xl shadow-lg border-l-4 border-primary">
                         <p className="text-xs font-bold text-gray-400 uppercase">Sejak Tahun</p>
                         <p className="text-xl font-black text-gray-800">2023</p>
-                    </div>
+                    </div> */}
                 </div>
             </div>
 

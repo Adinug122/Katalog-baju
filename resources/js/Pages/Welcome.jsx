@@ -23,22 +23,22 @@ const faqs = [
     {
         id: 1,
         question: "Bagaimana cara menentukan ukuran baju?",
-        answer: "Kami menyediakan layanan fitting gratis di butik kami. Jika Anda berada di luar kota, tim admin akan memandu Anda melakukan pengukuran mandiri sesuai standar size chart kami."
+        answer: "Setiap busana di katalog kami sudah memiliki ukuran masing-masing seperti M, L, hingga XL. Kamu bisa menyesuaikan dengan size yang biasa dipakai, dan tersedia opsi fitting (opsional) untuk memastikan lebih pas. Find your best fit."
     },
     {
         id: 2,
         question: "Berapa lama durasi sewa yang diberikan?",
-        answer: "Durasi standar sewa adalah 1 hari"
+        answer: "Durasi sewa selama 3 hari, terhitung dari pengambilan, pemakaian, hingga pengembalian. Jika melebihi batas waktu, akan dikenakan denda per busana, namun kamu tetap bisa konfirmasi ke admin jika ada kendala. Clear timing, no worries."
     },
     {
         id: 3,
         question: "Apakah baju harus dicuci sebelum dikembalikan?",
-        answer: "Tidak perlu. Harga sewa sudah termasuk biaya laundry profesional dan sterilisasi. Anda cukup menggunakan dan mengembalikannya, kami yang urus kebersihannya."
+        answer: "Tidak perlu, semua perawatan dan cleaning akan kami tangani agar kualitas busana tetap terjaga. Handled with care."
     },
     {
         id: 4,
         question: "Bagaimana jika baju yang disewa rusak atau kotor?",
-        answer: "Noda ringan adalah hal wajar. Namun untuk kerusakan permanen atau noda berat (seperti terkena lilin/sobek parah), akan dikenakan biaya perbaikan sesuai tingkat kerusakannya."
+        answer: "Noda atau kotor ringan masih dapat ditoleransi. Namun, untuk kerusakan atau noda berat akan dikenakan biaya sesuai ketentuan. Kami selalu menjaga kenyamanan bersama. Fair & transparent."
     }
 ];
     return (
@@ -58,7 +58,7 @@ const faqs = [
     </svg>
   </div>
 
-  <section className="relative max-w-7xl mx-auto px-6 lg:px-8 min-h-screen flex items-center">
+  <section className="relative max-w-7xl mx-auto px-6 lg:px-8 min-h-screen mt-5 flex items-center">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center w-full py-10 md:-mt-12">
 
       <div className="space-y-8 z-10">
@@ -87,14 +87,15 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
           }
         </div>
 
-        <h1 className="text-4xl md:text-6xl font-bold font-heading tracking-wider text-gray-900 ">
-          Temukan <br />
-          <span className="text-[#C9A834]">Style </span>
-          Terbaikmu
+        <h1 className="text-4xl md:text-5xl font-bold font-heading tracking-wider text-gray-900 ">
+          Temukan & <br />
+          <span className="text-[#C9A834]">Wujudkan </span>
+          Busana Terbaikmu
         </h1>
 
-        <p className="text-gray-500 font-body text-lg leading-relaxed max-w-sm">
-          Koleksi baju terbaru dengan kualitas premium dan desain modern. Cocok untuk semua gaya kamu.
+        <p className="text-gray-500 font-body text-lg tracking-tighter leading-relaxed max-w-xl">
+        Find your style with Pian Collections ✨ kualitas premium & desain modern yang cocok untuk semua look kamu.
+Mau sewa atau custom? Langsung cek “Lihat Katalog” and enjoy your best look 
         </p>
 
         <div className="flex gap-4 flex-wrap">
@@ -109,7 +110,7 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
         {/* Stats */}
         <div className="flex gap-8 pt-4 border-t border-gray-200">
           <div>
-            <div className="text-2xl font-bold text-gray-900">200+</div>
+            <div className="text-2xl font-bold text-gray-900">100+</div>
             <div className="text-xs text-gray-400 mt-0.5">Koleksi</div>
           </div>
           <div>
@@ -160,10 +161,11 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
   <div className='pt-16 pb-24 bg-[#FAF7F2]'>
 
     <h3 className='text-center text-3xl md:text-5xl font-bold font-heading text-[#9A7A1A] tracking-tight'>
-      Pusat Sewa Baju <span className="text-[#C9A834]">Terlengkap</span>
+    Kenapa harus <span className="text-[#C9A834]">Pian Collection?</span>
     </h3>
     <div className="w-24 h-1 bg-[#C9A834] mx-auto mt-4  rounded-full opacity-50"></div>
-    <p className='text-center max-w-2xl mx-auto pt-2 text-slate-500'>Tampil memukau tanpa harus membeli. Temukan ratusan koleksi baju terbaru dari desainer ternama yang siap buat penampilanmu jadi pusat perhatian di setiap acara."</p>
+    <p className='text-center max-w-2xl mx-auto pt-2 text-slate-500'>
+      Lebih dari sekadar outfit, ini tentang bagaimana kamu tampil dengan percaya diri di setiap momen spesial because your look tells your story.</p>
 
     <section className=' max-w-7xl mx-auto'>
 
@@ -191,8 +193,8 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
           </svg>
         </span>
       </div>
-      <h5 className="text-xl font-bold text-neutral-900 mb-3">Laundry & Steril</h5>
-      <p className="text-sm leading-relaxed text-neutral-500">Proses laundry profesional dan sterilisasi sebelum disewakan. Higienis 100% terjamin.</p>
+      <h5 className="text-xl font-bold text-neutral-900 mb-3">Pilihan Harga Fleksibel</h5>
+      <p className="text-sm leading-relaxed text-neutral-500">Beragam opsi harga yang dapat menyesuaikan kebutuhanmu, tanpa menghilangkan kesan elegan dalam setiap penampilan.</p>
     </div>
 
     <div className="bg-white border rounded-2xl shadow-sm p-7 border-neutral-200/60 hover:border-[#C9A834]/50 transition-all group">
@@ -207,8 +209,8 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
           </svg>
         </span>
       </div>
-      <h5 className="text-xl font-bold text-neutral-900 mb-3">Layanan Fitting</h5>
-      <p className="text-sm leading-relaxed text-neutral-500">Nikmati layanan fitting gratis dan jasa penyesuaian ukuran minor agar baju pas di badan.</p>
+      <h5 className="text-xl font-bold text-neutral-900 mb-3">Pendamping yang nyaman</h5>
+      <p className="text-sm leading-relaxed text-neutral-500">Kami membantu kamu menemukan pilihan terbaik dengan proses yang nyaman dan personal—styled just the way you need.</p>
     </div>
 
     <div className="bg-white border rounded-2xl shadow-sm p-7 border-neutral-200/60 hover:border-[#C9A834]/50 transition-all group">
@@ -221,8 +223,8 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
           </svg>
         </span>
       </div>
-      <h5 className="text-xl font-bold text-neutral-900 mb-3">Harga Kompetitif</h5>
-      <p className="text-sm leading-relaxed text-neutral-500">Tampil mewah tidak harus mahal. Paket sewa mulai dari harga pelajar hingga koleksi eksklusif.</p>
+      <h5 className="text-xl font-bold text-neutral-900 mb-3">Kualitas yang terjaga</h5>
+      <p className="text-sm leading-relaxed text-neutral-500">Setiap outfit dipersiapkan dengan detail dan ketelitian, agar kamu dapat tampil rapi, nyaman, dan tetap berkelas di setiap kesempatan.</p>
     </div>
 
   </div>
@@ -237,7 +239,7 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
 
   <div className="relative z-10">
     <h3 className='text-center text-3xl md:text-5xl font-bold font-heading text-white tracking-tight drop-shadow-md'>
-      Cara Mudah <span className="text-[#FDF2D1]">Sewa Katalog</span>
+     Solusi Praktis Sewa Katalog & <span className="text-[#FDF2D1]">Custom Jahit</span>
     </h3>
     <div className="w-24 h-1 bg-white/50 mx-auto mt-4 rounded-full"></div>
     <p className='text-center max-w-2xl mx-auto pt-4 text-white/90 px-6'>
@@ -252,9 +254,9 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
           <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-5 shadow-lg">
             <span className="text-[#C9A834] font-bold text-xl">01</span>
           </div>
-          <h5 className="text-xl font-bold text-white mb-3 tracking-wide">Pilih Katalog</h5>
+          <h5 className="text-xl font-bold text-white mb-3 tracking-wide">Pilih Style Favoritmu</h5>
           <p className="text-sm leading-relaxed text-white/80">
-            Jelajahi berbagai koleksi premium kami di website atau Instagram. Catat kode atau screenshot baju favoritmu.
+        Pilih langsung dari katalog kami atau wujudkan desain custom sesuai keinginanmu. Semua bisa disesuaikan dengan kebutuhan acara dan personal style kamu. Your style, your statement.
           </p>
         </div>
 
@@ -263,9 +265,9 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
           <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-5 shadow-lg">
             <span className="text-[#C9A834] font-bold text-xl">02</span>
           </div>
-          <h5 className="text-xl font-bold text-white mb-3 tracking-wide">Kirim Pesan</h5>
+          <h5 className="text-xl font-bold text-white mb-3 tracking-wide">Konsultasi dan booking</h5>
           <p className="text-sm leading-relaxed text-white/80">
-            Klik tombol WhatsApp, kirim foto baju yang dipilih dan informasikan tanggal acara Anda untuk cek ketersediaan.
+           Kirim pilihan atau ide kamu via WhatsApp, sertakan tanggal acara untuk cek ketersediaan. Tim kami siap bantu dengan proses yang cepat dan nyaman. Simple and hassle-free.
           </p>
         </div>
 
@@ -274,9 +276,9 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
           <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-5 shadow-lg">
             <span className="text-[#C9A834] font-bold text-xl">03</span>
           </div>
-          <h5 className="text-xl font-bold text-white mb-3 tracking-wide">Fitting & Bayar</h5>
+          <h5 className="text-xl font-bold text-white mb-3 tracking-wide">Fitting & Amankan Jadwal</h5>
           <p className="text-sm leading-relaxed text-white/80">
-            Lakukan fitting (opsional) untuk memastikan ukuran pas, lalu selesaikan pembayaran DP untuk amankan slot tanggal.
+        Untuk sewa bisa fitting (opsional), sedangkan custom akan dibuat sesuai ukuranmu agar hasilnya maksimal. Lanjut DP untuk mengunci jadwal biar lebih tenang. Fit that feels right.
           </p>
         </div>
 
@@ -285,9 +287,9 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
           <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-5 shadow-lg">
             <span className="text-[#C9A834] font-bold text-xl">04</span>
           </div>
-          <h5 className="text-xl font-bold text-white mb-3 tracking-wide">Ambil & Tampil</h5>
+          <h5 className="text-xl font-bold text-white mb-3 tracking-wide">Ambil & Tampil Percaya diri</h5>
           <p className="text-sm leading-relaxed text-white/80">
-            Ambil baju di toko atau kirim via kurir sesuai jadwal. Anda siap tampil mempesona di momen spesial!
+           Ambil langsung di store atau kirim ke lokasi sesuai jadwal. Baik sewa maupun custom, kamu siap tampil percaya diri dan berkesan di momen spesial. Time to shine your way. 💫
           </p>
         </div>
 
@@ -295,7 +297,7 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
 
 
       <div className="mt-16 text-center">
-        <a href="https://wa.me/yournumber" target="_blank" className="inline-flex items-center gap-2 bg-white text-[#9A7A1A] px-8 py-4 rounded-full font-bold text-lg hover:bg-[#FDF2D1] transition-all shadow-xl hover:scale-105">
+        <a href="https://wa.me/6285708159800" target="_blank" className="inline-flex items-center gap-2 bg-white text-[#9A7A1A] px-8 py-4 rounded-full font-bold text-lg hover:bg-[#FDF2D1] transition-all shadow-xl hover:scale-105">
            Hubungi Admin Sekarang 
            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.417-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.499-5.688-1.447l-6.305 1.65zm6.59-3.407c1.535.911 3.327 1.391 5.151 1.392 5.534 0 10.039-4.505 10.04-10.039 0-2.684-1.045-5.207-2.943-7.105-1.9-1.898-4.42-2.942-7.11-2.942-5.533 0-10.038 4.505-10.039 10.039-.001 1.91.53 3.774 1.535 5.39l-1.013 3.7 3.793-.995z"/></svg>
         </a>
@@ -311,7 +313,7 @@ bg-primary rounded-full transition-all duration-300 ease-in-out'>
   <img src="/img/hero2.jpg" alt="background2" className='w-[500px] object-cover rounded-3xl shadow-2xl'  />
 </div>
 <div>
-<div className='className="border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm'>
+<div className='border border-gray-200 rounded-2xl overflow-hidden pl-8 pt-5 bg-white shadow-sm'>
 <div className="mb-10 text-left">
 
     <div className="inline-flex mt-3 items-center gap-2 bg-[#C9A834]/10 text-[#9A7A1A] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4">

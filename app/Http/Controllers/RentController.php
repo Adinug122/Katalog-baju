@@ -152,7 +152,7 @@ class RentController extends Controller
                 $totalInvoice = 0;
 
                 foreach ($validated['items'] as $item) {
-                    $clothes = Clothes::where('kode', $item['kode'])
+                    $clothes = Clothes::where('kode', '=', $item['kode'])
                         ->lockForUpdate()
                         ->first();
 
@@ -192,8 +192,9 @@ class RentController extends Controller
                 if (!empty($validated['down_payment']) && $validated['down_payment'] > 0) {
                     $lastBalance = Cashflow::latest('id')->value('balance_after') ?? 0;
                     Cashflow::create([
+                        'rent_id'       => $rent->id,
                         'date'          => now(),
-                        'user_id' => Auth::id(),
+                        'user_id'       => Auth::id(),
                         'type'          => 'income',
                         'amount'        => $validated['down_payment'],
                         'balance_after' => $lastBalance + $validated['down_payment'],
@@ -228,7 +229,7 @@ class RentController extends Controller
                     });
             })->where('clothes_kode', $kode)->sum('qty');
 
-            $clothes      = Clothes::where('kode', $kode)->firstOrFail();
+            $clothes      = Clothes::where('kode', '=', $kode)->firstOrFail();
             $availableQty = $clothes->stock - $bookedQty;
 
             if ($availableQty < $qty) {
@@ -256,10 +257,11 @@ class RentController extends Controller
             if ($sisaBayar > 0) {
                 $lastBalance = Cashflow::latest('id')->value('balance_after') ?? 0;
                 Cashflow::create([
+                    'rent_id'       => $rent->id,
                     'date'          => now(),
                     'type'          => 'income',
                     'amount'        => $sisaBayar,
-                        'user_id' => Auth::id(),
+                    'user_id'       => Auth::id(),
                     'balance_after' => $lastBalance + $sisaBayar,
                     'description'   => "Pelunasan Sewa INV: {$rent->invoice_code}",
                 ]);
@@ -277,7 +279,7 @@ class RentController extends Controller
 
         DB::transaction(function () use ($rent, $denda) {
             foreach ($rent->details as $item) {
-                $clothes = Clothes::where('kode', $item->clothes_kode)->lockForUpdate()->first();
+                $clothes = Clothes::where('kode', '=', $item->clothes_kode)->lockForUpdate()->first();
                 if ($clothes) {
                     $clothes->increment('stock', $item->qty);
                 }
@@ -292,6 +294,7 @@ class RentController extends Controller
             if ($denda > 0) {
                 $lastBalance = Cashflow::latest('id')->value('balance_after') ?? 0;
                 Cashflow::create([
+                    'rent_id'       => $rent->id,
                     'date'          => now(),
                     'type'          => 'income',
                     'amount'        => $denda,
@@ -304,6 +307,9 @@ class RentController extends Controller
         return back()->with('success', 'Transaksi Selesai. Denda: Rp ' . number_format($denda, 0, ',', '.'));
     }
 
+    // ─────────────────────────────────────────────
+    // Edit / Update
+    // ─────────────────────────────────────────────
 
     public function edit(Rent $rent)
     {
@@ -313,12 +319,20 @@ class RentController extends Controller
         }
 
         $rent->load('details.cloth');
-        $clothes = Clothes::active()->where('stock', '>', 0)->get();
+
+        $currentItemKodes = $rent->details->pluck('clothes_kode')->toArray();
+        $clothes = Clothes::active()
+            ->where(function ($query) use ($currentItemKodes) {
+                $query->where('stock', '>', 0)
+                      ->orWhereIn('kode', $currentItemKodes);
+            })
+            ->get();
 
         return inertia('Rents/Edit', compact('rent', 'clothes'));
     }
 
-    public function update(Request $request, Rent $rent)
+ 
+public function update(Request $request, Rent $rent)
     {
         if ($rent->status !== 'booked') {
             return redirect()->route('rents.index')
@@ -326,54 +340,140 @@ class RentController extends Controller
         }
 
         $validated = $request->validate([
-            'customer_name'  => 'required|string|max:30',
-            'customer_phone' => 'required|string|max:15',
-            'customer_ktp'   => 'required|string|max:20',
-            'rent_date'      => 'required|date',
-            'return_date'    => 'required|date|after:rent_date',
-            'down_payment'   => 'nullable|integer|min:0',
-            'note'           => 'nullable|string|max:500',
+            'customer_name'    => 'required|string|max:30',
+            'customer_phone'   => 'required|string|max:15',
+            'customer_ktp'     => 'required|string|max:20',
+            'rent_date'        => 'required|date',
+            'return_date'      => 'required|date|after:rent_date',
+            'down_payment'     => 'nullable|integer|min:0',
+            'note'             => 'nullable|string|max:500',
+            'items'            => 'required|array|min:1|max:10',
+            'items.*.kode'     => 'required|exists:clothes,kode',
+            'items.*.qty'      => 'required|integer|min:1|max:50',
         ]);
 
         try {
             DB::transaction(function () use ($rent, $validated) {
+
                 $rentDays = Carbon::parse($validated['rent_date'])
                     ->diffInDays($validated['return_date']);
 
                 if ($rentDays < 3) {
-                    throw new \Exception("Minimum sewa adalah 3 hari. Anda memilih {$rentDays} hari.");
+                    throw new \Exception("Minimum sewa 3 hari.");
                 }
 
-                // Hitung ulang total berdasarkan periode baru
-                $rent->load('details.cloth');
-                $newTotal = 0;
-                foreach ($rent->details as $item) {
-                    $newTotal += $this->calculateSubtotal($item->cloth->price, $rentDays, $item->qty);
+                // 🔥 VALIDASI INVENTORY (WAJIB)
+                $this->validateInventoryAvailability(
+                    $validated['items'],
+                    $validated['rent_date'],
+                    $validated['return_date']
+                );
+
+                $rent->load('details');
+
+                foreach ($rent->details as $oldItem) {
+                    Clothes::where('kode', $oldItem->clothes_kode)
+                        ->increment('stock', $oldItem->qty);
                 }
 
+                $rent->details()->delete();
+
+                $total = 0;
+
+                foreach ($validated['items'] as $item) {
+                    $cloth = Clothes::where('kode', $item['kode'])
+                        ->lockForUpdate()
+                        ->firstOrFail();
+
+                    if ($cloth->stock < $item['qty']) {
+                        throw new \Exception("Stok {$cloth->name} tidak cukup.");
+                    }
+
+                    $subtotal = $this->calculateSubtotal(
+                        $cloth->price,
+                        $rentDays,
+                        $item['qty']
+                    );
+
+                    RentItem::create([
+                        'rent_id'        => $rent->id,
+                        'clothes_kode'   => $cloth->kode,
+                        'qty'            => $item['qty'],
+                        'price_per_item' => $cloth->price,
+                        'subtotal'       => $subtotal,
+                    ]);
+
+                    $cloth->decrement('stock', $item['qty']);
+
+                    $total += $subtotal;
+                }
+
+                // Ambil DP lama sebelum direplace
+                $oldDp = $rent->down_payment;
+                $newDp = min($validated['down_payment'] ?? 0, $total);
+                
                 $rent->update([
                     'customer_name'  => $validated['customer_name'],
                     'customer_phone' => $validated['customer_phone'],
                     'customer_ktp'   => $validated['customer_ktp'],
                     'rent_date'      => $validated['rent_date'],
                     'return_date'    => $validated['return_date'],
-                    'down_payment'   => $validated['down_payment'] ?? 0,
+                    'down_payment'   => $newDp,
                     'note'           => $validated['note'] ?? '',
-                    'total_price'    => $newTotal,
-                    'rent_price'     => $newTotal,
+                    'total_price'    => $total,
+                    'rent_price'     => $total,
                 ]);
+
+                if ($oldDp !== $newDp) {
+                    $dpCashflow = Cashflow::where('rent_id', $rent->id)
+                        ->where('type', 'income')
+                        ->where('description', 'like', "%DP Sewa%{$rent->invoice_code}%")
+                        ->first();
+
+                    $dpDelta = $newDp - $oldDp;
+
+                    if ($newDp > 0) {
+                        if ($dpCashflow) {
+                            // Update amount dan balance_after jika cashflow sudah ada
+                            $lastBalance = Cashflow::where('id', '<', $dpCashflow->id)->latest('id')->value('balance_after') ?? 0;
+                            $newBalance = $lastBalance + $newDp;
+
+                            $dpCashflow->update([
+                                'amount'        => $newDp,
+                                'balance_after' => $newBalance,
+                            ]);
+                        } else {
+                            // Buat cashflow baru jika tadinya DP 0
+                            $lastBalance = Cashflow::latest('id')->value('balance_after') ?? 0;
+                            $newBalance = $lastBalance + $newDp;
+
+                            Cashflow::create([
+                                'rent_id'       => $rent->id,
+                                'date'          => now(),
+                                'user_id'       => Auth::id(),
+                                'type'          => 'income',
+                                'amount'        => $newDp,
+                                'balance_after' => $newBalance,
+                                'description'   => "DP Sewa Diperbarui INV: {$rent->invoice_code}",
+                            ]);
+                        }
+                    } else {
+                        // Hapus cashflow jika DP diubah jadi 0
+                        if ($dpCashflow) {
+                            $dpCashflow->delete();
+                        }
+                    }
+                }
             });
 
             return redirect()->route('rents.index')
-                ->with('success', 'Order sewa berhasil diperbarui.');
+                ->with('success', 'Berhasil update.');
 
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Error: ' . $e->getMessage());
+            return back()->withInput()
+                ->with('error', $e->getMessage());
         }
     }
-
    
     public function returnBaju(Request $request, Rent $rent)
     {
@@ -416,7 +516,7 @@ class RentController extends Controller
 
                 $rent->loadMissing('details');
                 foreach ($rent->details as $item) {
-                    $clothes = Clothes::where('kode', $item->clothes_kode)->lockForUpdate()->first();
+                    $clothes = Clothes::where('kode', '=', $item->clothes_kode)->lockForUpdate()->first();
                     if ($clothes) {
                         $clothes->increment('stock', $item->qty);
                     }
@@ -434,6 +534,7 @@ class RentController extends Controller
                 if ($denda > 0) {
                     $lastBalance = Cashflow::latest('id')->value('balance_after') ?? 0;
                     Cashflow::create([
+                        'rent_id'       => $rent->id,
                         'date'          => now(),
                         'type'          => 'income',
                         'amount'        => $denda,
@@ -461,7 +562,7 @@ class RentController extends Controller
                 if (in_array($rent->status, ['booked', 'ongoing'])) {
                     $rent->load('details');
                     foreach ($rent->details as $item) {
-                        Clothes::where('kode', $item->clothes_kode)->increment('stock', $item->qty);
+                        Clothes::where('kode', '=', $item->clothes_kode)->increment('stock', $item->qty);
                     }
                 }
                 $rent->delete();

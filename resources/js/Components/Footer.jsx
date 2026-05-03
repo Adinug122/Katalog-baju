@@ -12,7 +12,7 @@ export default function Footer() {
             
             <div className="space-y-6">
                 <h4 className="text-2xl font-bold tracking-wider">
-                    Terminal <span className="text-[#C9A834]">Ultimate</span>
+                    Pian<span className="text-[#C9A834]"> Collection</span>
                 </h4>
                 <p className="text-gray-400 text-sm leading-relaxed italic">
                     "Elevating your style for every precious moment."
@@ -55,7 +55,8 @@ export default function Footer() {
                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
             </svg>
         </span>
-        <span className="leading-relaxed group-hover:text-white transition-colors">Jl. Sudirman No. 123, Madiun, Jawa Timur</span>
+        <span className="leading-relaxed group-hover:text-white transition-colors">Perum TNI-AL Blok F3/31 RT 24 RW 08 Desa Kedungkendo Kec. Candi Kab. Sidoarjo 61271
+</span>
     </li>
 
     <li className="flex items-center gap-4 group">
@@ -64,7 +65,7 @@ export default function Footer() {
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
             </svg>
         </span>
-        <span className="group-hover:text-white transition-colors">+62 812 3456 7890</span>
+        <span className="group-hover:text-white transition-colors">0812-2942-9816</span>
     </li>
 
     <li className="flex items-center gap-4 group">
@@ -73,7 +74,7 @@ export default function Footer() {
                 <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
             </svg>
         </span>
-        <span className="break-all group-hover:text-white transition-colors">info@terminalultimate.com</span>
+        <span className="break-all group-hover:text-white transition-colors">piancollections@gmail.com</span>
     </li>
 </ul>
                 </ul>
@@ -83,7 +84,7 @@ export default function Footer() {
         {/* Garis Bawah & Copyright */}
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-[10px] text-gray-500 uppercase tracking-widest">
-                © 2026 Terminal Ultimate. Crafted for Elegance.
+                © 2026 Piancollections. Crafted for Elegance.
             </p>
             <div className="flex gap-8 text-[10px] text-gray-500 uppercase tracking-widest">
                 <a href="#" className="hover:text-[#C9A834]">Terms</a>

@@ -216,6 +216,7 @@ export default function RentsIndex({ rents }) {
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Invoice</th>
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Pemesan</th>
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">NIK</th>
+                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Telepon</th>
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Baju</th>
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Pinjam</th>
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Kembali</th>
@@ -239,6 +240,9 @@ export default function RentsIndex({ rents }) {
                   </td>
                   <td className="whitespace-nowrap px-4 py-4 text-sm font-medium text-slate-900">
                     {rent.customer_ktp}
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-4 text-sm font-medium text-slate-900">
+                    {rent.customer_phone}
                   </td>
                     <td className="px-4 py-4 text-sm text-slate-600">
                     {rent.details?.length > 0
@@ -276,30 +280,37 @@ export default function RentsIndex({ rents }) {
                     </span>
                   </td>
                   <td className="whitespace-nowrap px-4 py-4 text-right text-sm font-medium space-x-2">
-                  <a 
-                    href={route('invoice', rent.invoice_code)} 
-                    target="_blank" 
-                    className="bg-red-500 text-white px-3 py-1 rounded"
-                  >
-                    Invoice
-                  </a>
-                  {rent.status == 'booked' && (
-                    <button
-                      onClick={() => handlePelunasan(rent.invoice_code)}
-                      className="rounded-lg bg-emerald-100 text-emerald-700 px-3 py-1 text-xs font-semibold capitalize hover:bg-emerald-200 transition"
+                    <a 
+                      href={route('invoice', rent.invoice_code)} 
+                      target="_blank" 
+                      className="bg-red-500 text-white px-3 py-1 rounded"
                     >
-                     Pelunasan
-                    </button>
-                  )}
-                  
-                  {rent.status == 'ongoing' && (
-                    <button
-                      onClick={() => handleSelesai(rent.invoice_code)}
-                      className="rounded-lg bg-emerald-100 text-emerald-700 px-3 py-1 text-xs font-semibold capitalize hover:bg-emerald-200 transition"
-                    >
-                      Selesai
-                    </button>
-                  )}
+                      Invoice
+                    </a>
+                    {rent.status === 'booked' && (
+                      <Link
+                        href={route('rents.edit', rent.id)}
+                        className="rounded-lg bg-blue-500 text-white px-3 py-1 text-xs font-semibold capitalize hover:bg-blue-600 transition"
+                      >
+                        Edit
+                      </Link>
+                    )}
+                    {rent.status == 'booked' && (
+                      <button
+                        onClick={() => handlePelunasan(rent.invoice_code)}
+                        className="rounded-lg bg-emerald-100 text-emerald-700 px-3 py-1 text-xs font-semibold capitalize hover:bg-emerald-200 transition"
+                      >
+                       Pelunasan
+                      </button>
+                    )}
+                    {rent.status == 'ongoing' && (
+                      <button
+                        onClick={() => handleSelesai(rent.invoice_code)}
+                        className="rounded-lg bg-emerald-100 text-emerald-700 px-3 py-1 text-xs font-semibold capitalize hover:bg-emerald-200 transition"
+                      >
+                        Selesai
+                      </button>
+                    )}
                     <button
                       onClick={() => deleteRent(rent.id)}
                       className="rounded-lg bg-red-100 text-red-700 px-3 py-1 text-xs font-semibold capitalize hover:bg-red-200 transition"

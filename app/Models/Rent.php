@@ -51,5 +51,10 @@ class Rent extends Model
         return $this->hasMany(RentItem::class, 'rent_id', 'id');
     }
 
+    public function cashflows()
+    {
+        return $this->hasMany(Cashflow::class, 'rent_id', 'id');
+    }
+
   
 }

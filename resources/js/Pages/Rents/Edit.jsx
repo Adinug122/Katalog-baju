@@ -1,19 +1,20 @@
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from '@inertiajs/react';
 import Layout from '@/Layouts/AuthenticatedLayout';
 
-// ─── Icon kecil ──────────────────────────────────────────────────────────────
 const IconPlus = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>;
 const IconTrash = () => <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7m2-3h6a1 1 0 011 1H8a1 1 0 011-1h2z" /></svg>;
 const IconSearch = () => <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" /></svg>;
 const IconTag = () => <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5a2 2 0 011.414.586l7 7a2 2 0 010 2.828l-5 5a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a2 2 0 014-4z" /></svg>;
 
-
-const toLocalDate = (date = new Date()) => {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
+const toLocalDate = (input) => {
+    if (!input) return '';
+    const d = input instanceof Date ? input : new Date(input + 'T00:00:00');
+    if (isNaN(d)) return ''; 
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
 };
 
 const addDays = (dateStr, days) => {
@@ -22,32 +23,37 @@ const addDays = (dateStr, days) => {
     return toLocalDate(date);
 };
 
-const makeItem = (clothes) => ({
+const makeItem = (clothes, reserved = 0) => ({
     kode: clothes?.kode ?? '',
     qty: 1,
     price: clothes?.price ?? 0,
     name: clothes?.name ?? '',
     stock: clothes?.stock ?? 0,
+    reserved,
 });
 
 const rp = (n) => 'Rp ' + (n || 0).toLocaleString('id-ID');
 
-// ─── Komponen utama ───────────────────────────────────────────────────────────
-export default function RentsCreate({ clothes }) {
-    const { data, setData, post, errors, processing } = useForm({
-        customer_name: '',
-        customer_phone: '',
-        customer_ktp: '',
-        rent_date: '',
-        return_date: '',
-        down_payment: 0,
-        note: '',
-        items: [makeItem(clothes[0])],
+export default function RentsEdit({ rent, clothes }) {
+    const { data, setData, put, errors, processing } = useForm({
+        customer_name: rent.customer_name || '',
+        customer_phone: rent.customer_phone || '',
+        customer_ktp: rent.customer_ktp || '',
+        rent_date: toLocalDate(rent.rent_date) || '',
+        return_date: toLocalDate(rent.return_date) || '',
+        down_payment: rent.down_payment || 0,
+        note: rent.note || '',
+        items: rent.details.map((item) => ({
+            kode: item.clothes_kode,
+            qty: item.qty,
+            price: item.price_per_item,
+            name: item.cloth?.name ?? '',
+            stock: item.cloth?.stock ?? 0,
+            reserved: item.qty,
+        })),
     });
 
-    const [keywords, setKeywords] = useState(['']);
-
-    const today = toLocalDate();
+    const [keywords, setKeywords] = useState(() => rent.details.map(() => ''));
 
     const rentDays = useMemo(() => {
         if (!data.rent_date || !data.return_date) return 0;
@@ -59,42 +65,42 @@ export default function RentsCreate({ clothes }) {
 
     const periods = useMemo(() => Math.ceil(rentDays / 3) || 0, [rentDays]);
 
-    useEffect(() => {
-        if (!data.rent_date) return;
-        const minStr = addDays(data.rent_date, 3);
-        if (!data.return_date || data.return_date < minStr) {
-            setData('return_date', minStr);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data.rent_date]);
-
     const minReturnDate = data.rent_date ? addDays(data.rent_date, 3) : '';
 
-    const usedKodes = useMemo(() => data.items.map((i) => i.kode), [data.items]);
+    const isFirstRender = useRef(true);
+
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+
+        if (!data.rent_date) return;
+        setData('return_date', addDays(data.rent_date, 3));
+    }, [data.rent_date]);
+
+    const handleReturnDateChange = (value) => {
+        setData('return_date', value);
+    };
+
+    const usedKodes = useMemo(() => data.items.map((item) => item.kode), [data.items]);
 
     const filteredFor = useCallback(
         (index) => {
-            const kw = keywords[index]?.toLowerCase() ?? '';
+            const kw = (keywords[index] ?? '').toLowerCase();
             const own = data.items[index]?.kode;
             return clothes.filter(
-                (c) =>
-                    (c.kode === own || !usedKodes.includes(c.kode)) &&
-                    (c.name?.toLowerCase().includes(kw) || c.kode?.toLowerCase().includes(kw) ||
-                        c.category?.toLowerCase().includes(kw))
+                (cloth) =>
+                    (cloth.kode === own || !usedKodes.includes(cloth.kode)) &&
+                    (
+                        cloth.name?.toLowerCase().includes(kw) ||
+                        cloth.kode?.toLowerCase().includes(kw) ||
+                        cloth.category?.toLowerCase().includes(kw)
+                    )
             );
         },
-        [clothes, keywords, usedKodes]
+        [clothes, keywords, usedKodes, data.items]
     );
-
-    const itemSubtotal = (item) => item.price * periods * (item.qty || 0);
-
-    const totalPrice = useMemo(
-        () => data.items.reduce((acc, item) => acc + itemSubtotal(item), 0),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [data.items, periods]
-    );
-
-    const sisa = Math.max(0, totalPrice - (data.down_payment || 0));
 
     const updateItem = (index, field, value) => {
         const next = data.items.map((item, i) => (i === index ? { ...item, [field]: value } : item));
@@ -102,45 +108,34 @@ export default function RentsCreate({ clothes }) {
     };
 
     const selectCloth = (index, kode) => {
-        const cloth = clothes.find((c) => c.kode === kode);
-        const next = data.items.map((item, i) =>
+        const cloth = clothes.find((item) => item.kode === kode);
+        if (!cloth) return;
+
+        const nextItems = data.items.map((item, i) =>
             i === index
-                ? { ...item, kode, price: cloth?.price ?? 0, name: cloth?.name ?? '', stock: cloth?.stock ?? 0 }
+                ? {
+                    kode,
+                    qty: 1,
+                    price: cloth.price,
+                    name: cloth.name,
+                    stock: cloth.stock,
+                    reserved: 0,
+                }
                 : item
         );
-        setData('items', next);
+
+        setData('items', nextItems);
     };
 
-const handleSearchChange = (index, e) => {
-    const value = e.target.value;
-
-    const next = [...keywords];
-    next[index] = value;
-    setKeywords(next);
-
-    const kw = value.toLowerCase();
-    const own = data.items[index]?.kode;
-
-    const newFiltered = clothes.filter(
-        (c) =>
-            (c.kode === own || !usedKodes.includes(c.kode)) &&
-            (
-                c.name?.toLowerCase().includes(kw) ||
-                c.kode?.toLowerCase().includes(kw) ||
-                c.category?.toLowerCase().includes(kw)
-            )
-    );
-
-    // kalau item sekarang sudah tidak ada di hasil filter → auto pilih yang pertama
-    const stillExists = newFiltered.some((c) => c.kode === own);
-
-    if (!stillExists && newFiltered.length > 0) {
-        selectCloth(index, newFiltered[0].kode);
-    }
-};
+    const handleSearchChange = (index, e) => {
+        const value = e.target.value;
+        const next = [...keywords];
+        next[index] = value;
+        setKeywords(next);
+    };
 
     const addItem = () => {
-        const unused = clothes.find((c) => !usedKodes.includes(c.kode));
+        const unused = clothes.find((cloth) => !usedKodes.includes(cloth.kode));
         if (!unused) return;
         setData('items', [...data.items, makeItem(unused)]);
         setKeywords((prev) => [...prev, '']);
@@ -152,16 +147,28 @@ const handleSearchChange = (index, e) => {
         setKeywords((prev) => prev.filter((_, i) => i !== index));
     };
 
-    function submit(e) {
+    const itemSubtotal = (item) => item.price * periods * (item.qty || 0);
+
+    const totalPrice = useMemo(
+        () => data.items.reduce((acc, item) => acc + itemSubtotal(item), 0),
+        [data.items, periods]
+    );
+
+    const sisa = Math.max(0, totalPrice - (data.down_payment || 0));
+
+    const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('rents.store'));
-    }
+        put(route('rents.update', rent.id));
+    };
 
     return (
-        <div className="max-w-4xl mx-auto py-6 px-4">
+        <div className="max-w-5xl mx-auto py-6 px-4">
             <div className="mb-6">
-                <h1 className="text-2xl font-semibold text-slate-800">Input Sewa Baru</h1>
-                <p className="text-sm text-slate-500 mt-1">Harga dihitung per 3 hari (dibulatkan ke atas)</p>
+                <h1 className="text-2xl font-semibold text-slate-800">Edit Sewa</h1>
+                <p className="text-sm text-slate-500 mt-1">Invoice: <span className="font-mono text-slate-700">{rent.invoice_code}</span></p>
+                <div className="mt-2 inline-block px-3 py-1 bg-amber-50 border border-amber-200 rounded-full">
+                    <span className="text-xs font-medium text-amber-700">Status: {rent.status}</span>
+                </div>
             </div>
 
             {Object.keys(errors).length > 0 && (
@@ -175,14 +182,10 @@ const handleSearchChange = (index, e) => {
                 </div>
             )}
 
-            <form onSubmit={submit} className="space-y-6">
-
-                {/* BLOK 1 — DAFTAR PRODUK */}
+            <form onSubmit={handleSubmit} className="space-y-6">
                 <section className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-                        <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">
-                            Produk yang Disewa
-                        </h2>
+                    <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                        <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Produk yang Disewa</h2>
                         <span className="text-xs text-slate-400">{data.items.length} item</span>
                     </div>
 
@@ -190,11 +193,12 @@ const handleSearchChange = (index, e) => {
                         {data.items.map((item, index) => {
                             const filtered = filteredFor(index);
                             const subtotal = itemSubtotal(item);
-                            const hasErr = errors[`items.${index}.kode`] || errors[`items.${index}.qty`];
+                            const maxQty = item.stock + (item.reserved || 0);
+                            const hasError = errors[`items.${index}.kode`] || errors[`items.${index}.qty`];
 
                             return (
                                 <div key={index} className="px-5 py-4 space-y-3">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between gap-3">
                                         <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
                                             <IconTag /> Produk {index + 1}
                                         </span>
@@ -202,7 +206,7 @@ const handleSearchChange = (index, e) => {
                                             <button
                                                 type="button"
                                                 onClick={() => removeItem(index)}
-                                                className="flex items-center gap-1 text-xs text-red-500 hover:text-red-700 transition-colors"
+                                                className="inline-flex items-center gap-1 text-xs text-red-500 hover:text-red-700 transition"
                                             >
                                                 <IconTrash /> Hapus
                                             </button>
@@ -213,15 +217,13 @@ const handleSearchChange = (index, e) => {
                                         <div>
                                             <label className="block text-xs text-slate-500 mb-1">Cari baju</label>
                                             <div className="relative">
-                                                <span className="absolute left-2.5 top-1/2 -translate-y-1/2">
-                                                    <IconSearch />
-                                                </span>
+                                                <span className="absolute left-2.5 top-1/2 -translate-y-1/2"><IconSearch /></span>
                                                 <input
                                                     type="text"
-                                                    placeholder="Ketik nama / kode..."
                                                     value={keywords[index] ?? ''}
-                                                   onChange={(e) => handleSearchChange(index, e)}
-                                                    className="w-full pl-8 pr-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"
+                                                    onChange={(e) => handleSearchChange(index, e)}
+                                                    placeholder="Nama / kode..."
+                                                    className="w-full rounded-lg border border-slate-300 pl-9 pr-3 py-2 text-sm focus:ring-primary focus:border-primary outline-none"
                                                 />
                                             </div>
                                         </div>
@@ -231,16 +233,16 @@ const handleSearchChange = (index, e) => {
                                             <select
                                                 value={item.kode}
                                                 onChange={(e) => selectCloth(index, e.target.value)}
-                                                className="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"
+                                                className="w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-primary focus:border-primary outline-none"
                                             >
                                                 {filtered.length > 0 ? (
-                                                    filtered.map((c) => (
-                                                        <option key={c.kode} value={c.kode}>
-                                                            {c.kode} — {c.name} (Stok: {c.stock})
+                                                    filtered.map((cloth) => (
+                                                        <option key={cloth.kode} value={cloth.kode}>
+                                                            {cloth.kode} — {cloth.name} (Stok: {cloth.stock})
                                                         </option>
                                                     ))
                                                 ) : (
-                                                    <option disabled>Tidak ada baju tersedia</option>
+                                                    <option disabled>Tidak ada produk tersedia</option>
                                                 )}
                                             </select>
                                         </div>
@@ -252,16 +254,16 @@ const handleSearchChange = (index, e) => {
                                             <input
                                                 type="number"
                                                 min="1"
-                                                max={item.stock || 99}
+                                                max={Math.max(1, maxQty)}
                                                 value={item.qty}
                                                 onChange={(e) => {
                                                     const raw = e.target.value;
                                                     const nextQty = raw === ''
                                                         ? ''
-                                                        : Math.max(1, Math.min(item.stock || 99, parseInt(raw) || 1));
+                                                        : Math.max(1, Math.min(maxQty, parseInt(raw) || 1));
                                                     updateItem(index, 'qty', nextQty);
                                                 }}
-                                                className="w-24 rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"
+                                                className="w-24 rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-primary focus:border-primary outline-none"
                                             />
                                         </div>
 
@@ -280,10 +282,8 @@ const handleSearchChange = (index, e) => {
                                         </div>
                                     </div>
 
-                                    {hasErr && (
-                                        <p className="text-xs text-red-600">
-                                            {errors[`items.${index}.kode`] || errors[`items.${index}.qty`]}
-                                        </p>
+                                    {hasError && (
+                                        <p className="text-xs text-red-600">{hasError}</p>
                                     )}
                                 </div>
                             );
@@ -295,14 +295,13 @@ const handleSearchChange = (index, e) => {
                             type="button"
                             onClick={addItem}
                             disabled={usedKodes.length >= clothes.length}
-                            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                            className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:text-primary/80 disabled:opacity-40 disabled:cursor-not-allowed transition"
                         >
                             <IconPlus /> Tambah Produk Lain
                         </button>
                     </div>
                 </section>
 
-                {/* BLOK 2 — DATA PELANGGAN */}
                 <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
                     <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Data Pelanggan</h2>
 
@@ -312,7 +311,7 @@ const handleSearchChange = (index, e) => {
                             <input
                                 value={data.customer_name}
                                 onChange={(e) => setData('customer_name', e.target.value)}
-                                className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"
+                                className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-primary focus:border-primary outline-none"
                                 placeholder="Masukkan nama lengkap"
                             />
                             {errors.customer_name && <p className="text-xs text-red-600 mt-1">{errors.customer_name}</p>}
@@ -323,7 +322,7 @@ const handleSearchChange = (index, e) => {
                             <input
                                 value={data.customer_phone}
                                 onChange={(e) => setData('customer_phone', e.target.value)}
-                                className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"
+                                className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-primary focus:border-primary outline-none"
                                 placeholder="0812xxxxxxxx"
                             />
                             {errors.customer_phone && <p className="text-xs text-red-600 mt-1">{errors.customer_phone}</p>}
@@ -335,7 +334,7 @@ const handleSearchChange = (index, e) => {
                                 type="text"
                                 value={data.customer_ktp}
                                 onChange={(e) => setData('customer_ktp', e.target.value)}
-                                className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"
+                                className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-primary focus:border-primary outline-none"
                                 placeholder="16 digit nomor KTP"
                             />
                             {errors.customer_ktp && <p className="text-xs text-red-600 mt-1">{errors.customer_ktp}</p>}
@@ -353,8 +352,7 @@ const handleSearchChange = (index, e) => {
                                 type="date"
                                 value={data.rent_date}
                                 onChange={(e) => setData('rent_date', e.target.value)}
-                                min={today}
-                                className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"
+                                className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-primary focus:border-primary outline-none"
                             />
                             {errors.rent_date && <p className="text-xs text-red-600 mt-1">{errors.rent_date}</p>}
                         </div>
@@ -363,10 +361,10 @@ const handleSearchChange = (index, e) => {
                             <label className="block text-sm font-medium text-slate-700">Tanggal Kembali</label>
                             <input
                                 type="date"
-                                value={data.return_date}
-                                onChange={(e) => setData('return_date', e.target.value)}
+                               value={data.return_date}
+                                onChange={(e) => handleReturnDateChange(e.target.value)}
                                 min={minReturnDate}
-                                className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"
+                                className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-primary focus:border-primary outline-none"
                             />
                             {errors.return_date && <p className="text-xs text-red-600 mt-1">{errors.return_date}</p>}
                         </div>
@@ -383,7 +381,6 @@ const handleSearchChange = (index, e) => {
                         </div>
                     )}
                 </section>
-
 
                 <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
                     <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">Ringkasan Pembayaran</h2>
@@ -419,7 +416,7 @@ const handleSearchChange = (index, e) => {
                                     : Math.max(0, Math.min(totalPrice, parseInt(raw) || 0));
                                 setData('down_payment', next);
                             }}
-                            className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"
+                            className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-primary focus:border-primary outline-none"
                             placeholder="Rp 0"
                         />
                         {errors.down_payment && <p className="text-xs text-red-600 mt-1">{errors.down_payment}</p>}
@@ -431,20 +428,25 @@ const handleSearchChange = (index, e) => {
                     </div>
                 </section>
 
-
                 <section className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
                     <label className="block text-sm font-medium text-slate-700">Catatan (Opsional)</label>
                     <textarea
                         value={data.note}
                         onChange={(e) => setData('note', e.target.value)}
-                        className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none resize-none"
+                        className="mt-1 w-full rounded-lg border border-slate-300 text-sm py-2 px-3 focus:ring-primary focus:border-primary outline-none resize-none"
                         placeholder="Contoh: Harus bersih, ada acara khusus, dll..."
                         rows={3}
                     />
                     {errors.note && <p className="text-xs text-red-600 mt-1">{errors.note}</p>}
                 </section>
 
-                <div className="flex justify-end pb-4">
+                <div className="flex justify-between items-center pb-4 gap-4">
+                    <a
+                        href={route('rents.index')}
+                        className="px-6 py-2.5 text-slate-700 text-sm font-medium rounded-lg border border-slate-300 hover:bg-slate-50 transition"
+                    >
+                        Batal
+                    </a>
                     <button
                         type="submit"
                         disabled={processing}
@@ -456,7 +458,7 @@ const handleSearchChange = (index, e) => {
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                             </svg>
                         )}
-                        {processing ? 'Menyimpan...' : 'Simpan Transaksi'}
+                        {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
                     </button>
                 </div>
             </form>
@@ -464,4 +466,4 @@ const handleSearchChange = (index, e) => {
     );
 }
 
-RentsCreate.layout = (page) => <Layout>{page}</Layout>;
+RentsEdit.layout = (page) => <Layout>{page}</Layout>;

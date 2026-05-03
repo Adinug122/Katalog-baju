@@ -10,6 +10,7 @@ class Cashflow extends Model
     protected $table = 'cashflows';
 
     protected $fillable = [
+        'rent_id',
         'date',
         'type',
         'amount',
@@ -30,6 +31,11 @@ class Cashflow extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function rent()
+    {
+        return $this->belongsTo(Rent::class);
     }
 
     /**

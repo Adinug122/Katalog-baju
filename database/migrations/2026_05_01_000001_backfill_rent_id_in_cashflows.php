@@ -5,20 +5,20 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    public function up(): void
-    {
-        // Backfill rent_id untuk cashflow entries yang sudah ada
-        // dengan cara parsing invoice code dari description
-        DB::statement('
-            UPDATE cashflows 
-            INNER JOIN rents ON (
-                cashflows.description LIKE CONCAT(\'%INV: \', rents.invoice_code)
-                OR cashflows.description LIKE CONCAT(\'%\', rents.invoice_code)
-            )
-            SET cashflows.rent_id = rents.id
-            WHERE cashflows.rent_id IS NULL
-        ');
-    }
+    // Ganti isi fungsi up() kamu jadi begini:
+public function up()
+{
+    DB::statement("
+        UPDATE cashflows 
+        SET rent_id = rents.id
+        FROM rents
+        WHERE cashflows.rent_id IS NULL
+        AND (
+            cashflows.description LIKE '%' || rents.invoice_code
+            OR cashflows.description LIKE '%INV: ' || rents.invoice_code
+        )
+    ");
+}
 
     public function down(): void
     {

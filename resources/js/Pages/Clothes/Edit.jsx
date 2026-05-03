@@ -16,7 +16,8 @@ export default function ClothesEdit({ clothes, categories }) {
     stock: clothes.stock,
     condition: clothes.condition || 'Bagus',
   });
-
+// Di bagian atas bersama state lainnya
+const [previewUrl, setPreviewUrl] = useState(null);
   const {
     data: uploadData,
     setData: setUploadData,
@@ -34,26 +35,30 @@ export default function ClothesEdit({ clothes, categories }) {
     put(route('clothes.update', clothes.kode));
   }
 
-  function handleImageChange(e) {
-    setUploadData('image', e.target.files[0] ?? null);
-    // reset agar bisa pilih file yang sama lagi
-    e.target.value = '';
+function handleImageChange(e) {
+  const file = e.target.files[0];
+  if (file) {
+    setUploadData('image', file);
+    setPreviewUrl(URL.createObjectURL(file)); // Membuat preview lokal
+  } else {
+    setUploadData('image', null);
+    setPreviewUrl(null);
   }
+}
+function submitImage(e) {
+  e.preventDefault();
+  if (!uploadData.image) return;
 
-  function submitImage(e) {
-    e.preventDefault();
-    if (!uploadData.image) return;
-
-    upload(route('clothes-images.store'), {
-      forceFormData: true,
-      onSuccess() {
-        resetUpload();
-        setCurrentIndex(0);
-        router.reload();
-      },
-    });
-  }
-
+  upload(route('clothes-images.store'), {
+    forceFormData: true,
+    onSuccess() {
+      resetUpload();
+      setPreviewUrl(null); // Hapus preview setelah sukses
+      setCurrentIndex(0);
+      router.reload();
+    },
+  });
+}
   function deleteImage(id) {
     if (!confirm('Hapus gambar ini?')) return;
 
@@ -161,27 +166,50 @@ export default function ClothesEdit({ clothes, categories }) {
         </div>
 
         {/* Form upload — terpisah dari form data produk */}
-        <form onSubmit={submitImage} className="mt-4 flex flex-col gap-2">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="rounded border px-2 py-1"
-          />
+  {/* Form upload */}
+<form onSubmit={submitImage} className="mt-4 flex flex-col gap-2">
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageChange}
+    className="rounded border px-2 py-1"
+  />
 
-          {uploadErrors &&
-            Object.values(uploadErrors).map((msg) => (
-              <p key={msg} className="text-xs text-red-500">{msg}</p>
-            ))}
+  {/* BAGIAN PREVIEW BARU (Seperti di gambar 1b3b5a.png) */}
+  {previewUrl && (
+    <div className="mt-2">
+      <p className="text-xs text-slate-500 mb-1">Preview gambar yang akan diunggah:</p>
+      <div className="relative h-32 w-32 overflow-hidden rounded border border-blue-400 ring-2 ring-blue-100">
+        <img 
+          src={previewUrl} 
+          alt="Preview" 
+          className="h-full w-full object-cover" 
+        />
+        <button 
+          type="button"
+          onClick={() => { setPreviewUrl(null); setUploadData('image', null); }}
+          className="absolute top-1 right-1 bg-red-600 text-white text-[10px] px-1 rounded-full"
+        >
+          X
+        </button>
+      </div>
+    </div>
+  )}
 
-          <button
-            type="submit"
-            disabled={uploadProcessing}
-            className="rounded px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm bg-primary text-white hover:bg-sidebar-primary/90 transition"
-          >
-            Unggah Gambar
-          </button>
-        </form>
+  {uploadErrors && Object.values(uploadErrors).map((msg) => (
+    <p key={msg} className="text-xs text-red-500">{msg}</p>
+  ))}
+
+  <button
+    type="submit"
+    disabled={uploadProcessing || !uploadData.image}
+    className={`rounded px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm text-white transition ${
+      !uploadData.image ? 'bg-gray-400' : 'bg-primary hover:bg-sidebar-primary/90'
+    }`}
+  >
+    {uploadProcessing ? 'Sedang Mengunggah...' : 'Unggah Sekarang'}
+  </button>
+</form>
       </section>
 
       <form onSubmit={submit} className="space-y-3 rounded border bg-white p-4">

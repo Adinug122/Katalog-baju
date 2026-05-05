@@ -106,26 +106,27 @@ export default function Contact() {
 
               </div>
 
-              <div className='rounded-xl overflow-hidden shadow-xl relative min-h-[350px] md:min-h-[500px]'>
-            <iframe
-  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15823.493659267611!2d112.68739505047114!3d-7.479227855270228!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7e0db63591bff%3A0x7ed4b80de0b7c8df!2sPerum%20TNI%20AL%2C%20Jl.%20Kayen%20No.21%2C%20Kayen%2C%20Kedungkendo%2C%20Kec.%20Candi%2C%20Kabupaten%20Sidoarjo%2C%20Jawa%20Timur%2061271!5e0!3m2!1sid!2sid!4v1777607765548!5m2!1sid!2sid"
-  width="100%"
-  height="100%"
-  style={{ border: 0 }}
-  allowFullScreen
-  loading="lazy"
-  referrerPolicy="no-referrer-when-downgrade"
-  className="w-full h-full"
-/>
-                
-                  <div className="absolute top-4 right-4 md:top-6 md:right-6">
-                     <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 md:px-4 md:py-2 rounded-full shadow-lg flex items-center gap-2 border border-white transition-all">
-                        <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-red-500 rounded-full animate-pulse"></span>
-                        <span className="text-[8px] md:text-[10px] font-black uppercase tracking-tighter text-gray-700">Live Location</span>
-                     </div>
-                  </div>
-              </div>
+           <div className="rounded-xl overflow-hidden shadow-xl relative min-h-[350px] md:min-h-[500px]">
+  
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13890.442883198919!2d112.6958580417724!3d-7.480493565240045!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd7e1614b2c0ab9%3A0x53ae0830c914b569!2sPian%20Collections!5e0!3m2!1sid!2sid!4v1777986460160!5m2!1sid!2sid"
+    className="absolute inset-0 w-full h-full"
+    style={{ border: 0 }}
+    allowFullScreen
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+  />
 
+  <div className="absolute top-4 right-4 md:top-6 md:right-6">
+    <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 md:px-4 md:py-2 rounded-full shadow-lg flex items-center gap-2 border border-white transition-all">
+      <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-red-500 rounded-full animate-pulse"></span>
+      <span className="text-[8px] md:text-[10px] font-black uppercase tracking-tighter text-gray-700">
+        Live Location
+      </span>
+    </div>
+  </div>
+
+</div>
             </div>
         </div>
       </section>

@@ -182,7 +182,7 @@ Mau sewa atau custom? Langsung cek “Lihat Katalog” and enjoy your best look
         </span>
       </div>
       <h5 className="text-xl font-bold text-neutral-900 mb-3">Koleksi Terlengkap</h5>
-      <p className="text-sm leading-relaxed text-neutral-500">Mulai dari Jas, Kebaya, hingga Gaun Internasional dengan 200+ pilihan model terbaru.</p>
+      <p className="text-sm leading-relaxed text-neutral-500">Mulai dari Jas, Kebaya, hingga Gaun Internasional dengan 100+ pilihan model terbaru.</p>
     </div>
     <div className="bg-white border rounded-2xl shadow-sm p-7 border-neutral-200/60 hover:border-[#C9A834]/50 transition-all group">
       <div className="w-12 h-12 bg-[#C9A834]/10 rounded-xl flex items-center justify-center mb-5 group-hover:bg-[#C9A834] transition-colors">

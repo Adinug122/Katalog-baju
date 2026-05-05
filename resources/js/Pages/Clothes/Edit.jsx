@@ -207,7 +207,7 @@ function submitImage(e) {
       !uploadData.image ? 'bg-gray-400' : 'bg-primary hover:bg-sidebar-primary/90'
     }`}
   >
-    {uploadProcessing ? 'Sedang Mengunggah...' : 'Unggah Sekarang'}
+    {uploadProcessing ? 'Sedang Diunggah...' : 'Unggah Sekarang'}
   </button>
 </form>
       </section>

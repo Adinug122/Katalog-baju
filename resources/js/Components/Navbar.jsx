@@ -26,7 +26,7 @@ const handleSearch = (e) => {
     >
     
       <span className="font-semibold sm:block">Pian</span>
-      <span className="font-light sm:block text-primary">Collection</span>
+      <span className="font-light sm:block text-primary">Collections</span>
     </a>
        <nav className="hidden md:flex items-center gap-6 text-sm">
     <Link href={route('home')}

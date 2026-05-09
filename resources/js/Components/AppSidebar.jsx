@@ -34,7 +34,7 @@ export function AppSidebar() {
     <Sidebar className='w-72 min-w-[288px] border-r  min-h-screen text-sm'>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className='text-2xl font-bold mb-10 '>Katalog Baju</SidebarGroupLabel>
+          <SidebarGroupLabel className='text-2xl font-bold mb-10 '>Pian Collections</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

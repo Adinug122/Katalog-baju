@@ -97,7 +97,7 @@ class ClothesController extends Controller
             'size' => 'required|in:S,M,L,XL',
             'price' => 'required|integer|min:0',
             'description' => 'required|string',
-            'is_active' => 'sometimes|boolean',
+             'is_active' => 'sometimes|boolean',
             'stock' => 'required|integer|min:0',
         ]);
 

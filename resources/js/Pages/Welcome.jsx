@@ -126,15 +126,15 @@ Mau sewa atau custom? Langsung cek “Lihat Katalog” and enjoy your best look
 
       <div className="relative flex justify-center md:justify-end z-10">
 
-        <div className="absolute top-6 right-6 w-[80%] h-[90%] rounded-3xl bg-[#C9A834]/20 border border-[#C9A834]/20" />
+        {/* <div className="absolute top-6 right-6 w-[80%] h-[90%] rounded-3xl bg-[#C9A834]/20 border border-[#C9A834]/20" />
         <div className="absolute top-3 right-3 w-[80%] h-[90%] rounded-3xl bg-[#C9A834]/10" />
 
-   
-        <div className="relative w-[70%]">
+    */}
+        <div className="relative w-[70%] mt-2">
           <img
-            src="/img/hero.png"
+            src="/img/banner.jpg"
             alt="Fashion"
-            className="relative z-10 w-full  object-cover rounded-3xl shadow-2xl"
+            className="relative z-10 w-full object-cover rounded-3xl shadow-2xl"
           />
 
           <div className="absolute bottom-6 left-[-40px] z-20 bg-white shadow-xl rounded-2xl px-4 py-3 flex items-center gap-3">
@@ -148,7 +148,7 @@ Mau sewa atau custom? Langsung cek “Lihat Katalog” and enjoy your best look
           </div>
 
           {/* Badge New Arrival */}
-          <div className="absolute top-6 left-[-30px] z-20 bg-[#C9A834] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg rotate-[-6deg]">
+          <div className="absolute top-6 left-[-20px] z-20 bg-[#C9A834] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg rotate-[-6deg]">
             New Arrival ✦
           </div>
         </div>
@@ -297,7 +297,7 @@ Mau sewa atau custom? Langsung cek “Lihat Katalog” and enjoy your best look
 
 
       <div className="mt-16 text-center">
-        <a href="https://wa.me/6285708159800" target="_blank" className="inline-flex items-center gap-2 bg-white text-[#9A7A1A] px-8 py-4 rounded-full font-bold text-lg hover:bg-[#FDF2D1] transition-all shadow-xl hover:scale-105">
+        <a href="https://wa.me/6281229429816" target="_blank" className="inline-flex items-center gap-2 bg-white text-[#9A7A1A] px-8 py-4 rounded-full font-bold text-lg hover:bg-[#FDF2D1] transition-all shadow-xl hover:scale-105">
            Hubungi Admin Sekarang 
            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.417-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.499-5.688-1.447l-6.305 1.65zm6.59-3.407c1.535.911 3.327 1.391 5.151 1.392 5.534 0 10.039-4.505 10.04-10.039 0-2.684-1.045-5.207-2.943-7.105-1.9-1.898-4.42-2.942-7.11-2.942-5.533 0-10.038 4.505-10.039 10.039-.001 1.91.53 3.774 1.535 5.39l-1.013 3.7 3.793-.995z"/></svg>
         </a>
@@ -308,9 +308,9 @@ Mau sewa atau custom? Langsung cek “Lihat Katalog” and enjoy your best look
 
 <div className='mt-32 p-4'>
   <section id='faq' className='max-w-7xl mx-auto '>
-<div className='grid grid-cols-1 md:grid-cols-2'>
+<div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
 <div>
-  <img src="/img/hero2.jpg" alt="background2" className='w-[500px] object-cover rounded-3xl shadow-2xl'  />
+  <img src="/img/hero2.jpg" alt="background2" className='w-[500px] h-[500px] object-cover rounded-3xl shadow-2xl'  />
 </div>
 <div>
 <div className='border border-gray-200 rounded-2xl overflow-hidden pl-8 pt-5 bg-white shadow-sm'>

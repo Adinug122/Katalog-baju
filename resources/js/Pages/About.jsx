@@ -54,7 +54,7 @@ Karena setiap outfit bukan cuma baju, tapi juga cerita dan vibe diri kamu.
            
                 <div className='relative z-10 rounded-2xl overflow-hidden shadow-2xl'>
                     <img 
-                        src="/img/about.jpg" 
+                        src="/img/about.jpeg" 
                         alt="Tim Kami atau Workshop" 
                         className="w-full h-[400px] object-cover"
                     />

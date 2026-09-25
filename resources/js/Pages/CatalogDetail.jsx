@@ -47,7 +47,7 @@ export default function ({ cloth }) {
     };
 
     const handleSewa = () => {
-        const adminPhone = "6285708159800";
+        const adminPhone = "6281229429816";
         const text = `Halo Admin Saya ingin memesan baju ini:%0A%0A` +
             ` *Nama*: ${cloth.name}%0A` +
             ` *Kode*: ${cloth.kode}%0A` +
